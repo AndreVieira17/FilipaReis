@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #fbf8f3;
+  --foreground: #2a2521;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .container-app {
+    @apply mx-auto w-full max-w-container px-5 sm:px-8;
+  }
+
+  .placeholder-media {
+    @apply flex items-center justify-center bg-sand text-stone/60;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(107, 98, 89, 0.06),
+      rgba(107, 98, 89, 0.06) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+  }
+}
