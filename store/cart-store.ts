@@ -5,6 +5,7 @@ import type { CartItem } from "@/lib/types";
 type CartState = {
   items: CartItem[];
   isOpen: boolean;
+  hasHydrated: boolean;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   removeItem: (key: string) => void;
   setQuantity: (key: string, quantity: number) => void;
@@ -12,6 +13,7 @@ type CartState = {
   open: () => void;
   close: () => void;
   toggle: () => void;
+  setHasHydrated: (value: boolean) => void;
 };
 
 export const useCartStore = create<CartState>()(
@@ -19,6 +21,7 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       isOpen: false,
+      hasHydrated: false,
       addItem: (item, quantity = 1) => {
         const items = get().items;
         const existing = items.find((i) => i.key === item.key);
@@ -48,13 +51,21 @@ export const useCartStore = create<CartState>()(
       open: () => set({ isOpen: true }),
       close: () => set({ isOpen: false }),
       toggle: () => set({ isOpen: !get().isOpen }),
+      setHasHydrated: (value) => set({ hasHydrated: value }),
     }),
     {
       name: "filipa-reis-cart",
       partialize: (state) => ({ items: state.items }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );
+
+export function useCartHasHydrated() {
+  return useCartStore((s) => s.hasHydrated);
+}
 
 export function useCartCount() {
   return useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
