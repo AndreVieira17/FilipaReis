@@ -12,6 +12,7 @@ import {
 import { formatPrice } from "@/lib/utils";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { Button, LinkButton } from "@/components/ui/Button";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 export function CarrinhoClient() {
   const items = useCartStore((s) => s.items);
@@ -54,17 +55,21 @@ export function CarrinhoClient() {
 
   if (items.length === 0) {
     return (
-      <div className="container-app flex flex-col items-center justify-center gap-4 py-24 text-center">
-        <ShoppingBag className="h-10 w-10 text-stone" strokeWidth={1.5} />
-        <h1 className="font-display text-2xl text-charcoal">O teu carrinho está vazio</h1>
-        <LinkButton href="/loja" variant="primary">Ver a loja</LinkButton>
+      <div className="container-app py-12">
+        <Breadcrumbs items={[{ label: "Carrinho" }]} />
+        <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
+          <ShoppingBag className="h-10 w-10 text-stone" strokeWidth={1.5} />
+          <h1 className="font-display text-2xl text-charcoal">O teu carrinho está vazio</h1>
+          <LinkButton href="/loja" variant="primary">Ver a loja</LinkButton>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="container-app py-12">
-      <h1 className="font-display text-3xl text-charcoal">Carrinho</h1>
+      <Breadcrumbs items={[{ label: "Carrinho" }]} />
+      <h1 className="mt-6 font-display text-3xl text-charcoal">Carrinho</h1>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-3 lg:gap-16">
         <ul className="divide-y divide-line lg:col-span-2">

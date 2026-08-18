@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Mail, MessageCircle } from "lucide-react";
 import { InstagramIcon } from "@/components/ui/SocialIcons";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Contacto",
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
 export default function ContactoPage() {
   return (
     <div className="container-app py-12">
-      <div className="mx-auto grid max-w-3xl gap-12 sm:grid-cols-2">
+      <Breadcrumbs items={[{ label: "Contacto" }]} />
+      <div className="mx-auto mt-6 grid max-w-3xl gap-12 sm:grid-cols-2">
         <div>
           <p className="text-sm uppercase tracking-[0.2em] text-clay">Contacto</p>
           <h1 className="mt-2 font-display text-3xl text-charcoal">Fala connosco</h1>

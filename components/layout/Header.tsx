@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CartButton } from "./CartButton";
+import { WishlistIcon } from "./WishlistIcon";
+import { HeaderSearch } from "./HeaderSearch";
 
 const NAV_LINKS = [
   { href: "/", label: "Início" },
@@ -36,6 +38,8 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-1">
+          <HeaderSearch />
+          <WishlistIcon />
           <CartButton />
           <button
             type="button"

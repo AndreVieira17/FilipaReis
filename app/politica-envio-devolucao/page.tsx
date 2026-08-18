@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Envios & Devoluções",
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
 export default function PoliticaEnvioDevolucaoPage() {
   return (
     <div className="container-app py-12">
-      <div className="mx-auto max-w-2xl">
+      <Breadcrumbs items={[{ label: "Envios & Devoluções" }]} />
+      <div className="mx-auto mt-6 max-w-2xl">
         <h1 className="font-display text-3xl text-charcoal">Envios &amp; Devoluções</h1>
         {/* PLACEHOLDER — substituir por política real de envio e devolução */}
         <div className="mt-8 space-y-6 text-sm text-stone">

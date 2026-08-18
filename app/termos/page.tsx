@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Termos & Condições",
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
 export default function TermosPage() {
   return (
     <div className="container-app py-12">
-      <div className="mx-auto max-w-2xl">
+      <Breadcrumbs items={[{ label: "Termos & Condições" }]} />
+      <div className="mx-auto mt-6 max-w-2xl">
         <h1 className="font-display text-3xl text-charcoal">Termos &amp; Condições</h1>
         {/* PLACEHOLDER — substituir por termos e condições reais, idealmente revistos juridicamente */}
         <div className="mt-8 space-y-6 text-sm text-stone">

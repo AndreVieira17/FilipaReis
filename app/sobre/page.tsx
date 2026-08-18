@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Sobre",
@@ -9,8 +10,9 @@ export const metadata: Metadata = {
 export default function SobrePage() {
   return (
     <div className="container-app py-12">
+      <Breadcrumbs items={[{ label: "Sobre" }]} />
       <div className="mx-auto max-w-3xl">
-        <p className="text-sm uppercase tracking-[0.2em] text-clay">Sobre</p>
+        <p className="mt-6 text-sm uppercase tracking-[0.2em] text-clay">Sobre</p>
         <h1 className="mt-2 font-display text-3xl text-charcoal sm:text-4xl">
           A história por trás de cada peça
         </h1>

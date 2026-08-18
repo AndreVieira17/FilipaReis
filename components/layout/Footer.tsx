@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { Mail } from "lucide-react";
 import { InstagramIcon, FacebookIcon } from "@/components/ui/SocialIcons";
+import { TrustBadges } from "@/components/ui/TrustBadges";
 
 export function Footer() {
   return (
     <footer className="border-t border-line bg-sand">
+      <div className="container-app border-b border-line py-6">
+        <TrustBadges />
+      </div>
       <div className="container-app grid gap-10 py-14 sm:grid-cols-3">
         <div>
           <h2 className="font-display text-lg text-charcoal">Filipa Reis</h2>
