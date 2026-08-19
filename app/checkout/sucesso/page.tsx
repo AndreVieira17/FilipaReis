@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CheckCircle } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { stripe } from "@/lib/stripe";
 import { LinkButton } from "@/components/ui/Button";
 import { formatPrice } from "@/lib/utils";
@@ -28,18 +29,20 @@ export default async function CheckoutSucessoPage({
     }
   }
 
+  const t = await getTranslations("checkout");
+
   return (
     <div className="container-app flex flex-col items-center justify-center gap-4 py-24 text-center">
       <ClearCartOnMount />
       <CheckCircle className="h-10 w-10 text-clay" strokeWidth={1.5} />
-      <h1 className="font-display text-3xl text-charcoal">Obrigada pela tua compra!</h1>
+      <h1 className="font-display text-3xl text-charcoal">{t("successTitle")}</h1>
       <p className="max-w-md text-stone">
-        A tua encomenda foi confirmada
-        {total != null && <> — total de {formatPrice(total)}</>}.
-        {email && <> Enviámos os detalhes para {email}.</>} Cada peça é preparada
-        com cuidado antes de seguir para envio.
+        {t("successText")}
+        {total != null && t("successTotal", { total: formatPrice(total) })}.
+        {email && t("successEmail", { email })}
+        {t("successNote")}
       </p>
-      <LinkButton href="/loja" variant="primary">Continuar a explorar</LinkButton>
+      <LinkButton href="/loja" variant="primary">{t("continueShopping")}</LinkButton>
     </div>
   );
 }

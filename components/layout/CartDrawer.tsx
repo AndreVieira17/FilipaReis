@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCartStore, useCartSubtotal } from "@/store/cart-store";
 import { formatPrice, cn } from "@/lib/utils";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
@@ -14,6 +15,7 @@ export function CartDrawer() {
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const subtotal = useCartSubtotal();
+  const t = useTranslations("cart");
 
   return (
     <>
@@ -30,18 +32,18 @@ export function CartDrawer() {
           "fixed right-0 top-0 z-50 flex h-full w-full max-w-sm flex-col bg-cream shadow-xl transition-transform duration-300",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
-        aria-label="Carrinho de compras"
+        aria-label={t("title")}
         role="dialog"
         aria-modal="true"
       >
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 className="text-sm tracking-wide text-charcoal">
-            Carrinho ({items.reduce((s, i) => s + i.quantity, 0)})
+            {t("title")} ({items.reduce((s, i) => s + i.quantity, 0)})
           </h2>
           <button
             type="button"
             onClick={close}
-            aria-label="Fechar carrinho"
+            aria-label={t("close")}
             className="p-1 text-charcoal"
           >
             <X className="h-5 w-5" strokeWidth={1.5} />
@@ -51,13 +53,13 @@ export function CartDrawer() {
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 px-5 text-center">
             <ShoppingBag className="h-8 w-8 text-stone" strokeWidth={1.5} />
-            <p className="text-sm text-stone">O teu carrinho está vazio.</p>
+            <p className="text-sm text-stone">{t("empty")}.</p>
             <Link
               href="/loja"
               onClick={close}
               className="text-sm text-charcoal underline underline-offset-4"
             >
-              Ver a loja
+              {t("emptyLink")}
             </Link>
           </div>
         ) : (
@@ -92,7 +94,7 @@ export function CartDrawer() {
                       <button
                         type="button"
                         onClick={() => removeItem(item.key)}
-                        aria-label={`Remover ${item.name}`}
+                        aria-label={t("remove", { name: item.name })}
                         className="text-stone hover:text-charcoal"
                       >
                         <X className="h-3.5 w-3.5" />
@@ -101,7 +103,7 @@ export function CartDrawer() {
                     <div className="inline-flex w-fit items-center rounded-full border border-line">
                       <button
                         type="button"
-                        aria-label="Diminuir quantidade"
+                        aria-label={t("decrease")}
                         className="p-2 text-charcoal disabled:opacity-30"
                         disabled={item.quantity <= 1}
                         onClick={() => setQuantity(item.key, item.quantity - 1)}
@@ -113,7 +115,7 @@ export function CartDrawer() {
                       </span>
                       <button
                         type="button"
-                        aria-label="Aumentar quantidade"
+                        aria-label={t("increase")}
                         className="p-2 text-charcoal"
                         onClick={() => setQuantity(item.key, item.quantity + 1)}
                       >
@@ -130,7 +132,7 @@ export function CartDrawer() {
         {items.length > 0 && (
           <div className="border-t border-line px-5 py-4">
             <div className="mb-4 flex items-center justify-between text-sm">
-              <span className="text-stone">Subtotal</span>
+              <span className="text-stone">{t("subtotal")}</span>
               <span className="text-charcoal">{formatPrice(subtotal)}</span>
             </div>
             <Link
@@ -138,7 +140,7 @@ export function CartDrawer() {
               onClick={close}
               className="flex w-full items-center justify-center rounded-full bg-charcoal px-6 py-3 text-sm text-cream transition-colors hover:bg-clay-dark"
             >
-              Ver carrinho
+              {t("viewCart")}
             </Link>
           </div>
         )}

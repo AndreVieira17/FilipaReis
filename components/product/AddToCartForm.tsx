@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { ProductVariant, ProductWithRelations } from "@/lib/types";
 import { formatPrice, variantLabel } from "@/lib/utils";
 import { QuantitySelector } from "@/components/ui/QuantitySelector";
@@ -15,6 +16,8 @@ export function AddToCartForm({ product }: { product: ProductWithRelations }) {
     product.variants[0]?.id ?? null
   );
   const addItem = useCartStore((s) => s.addItem);
+  const t = useTranslations("product");
+  const tCommon = useTranslations("common");
 
   const selectedVariant: ProductVariant | null =
     product.variants.find((v) => v.id === variantId) ?? null;
@@ -56,7 +59,7 @@ export function AddToCartForm({ product }: { product: ProductWithRelations }) {
       {product.variants.length > 0 && (
         <div className="mt-6">
           <label htmlFor="variant" className="mb-1.5 block text-xs text-stone">
-            Opção
+            {t("option")}
           </label>
           <select
             id="variant"
@@ -66,7 +69,7 @@ export function AddToCartForm({ product }: { product: ProductWithRelations }) {
           >
             {product.variants.map((v) => (
               <option key={v.id} value={v.id} disabled={v.stock_quantity <= 0}>
-                {variantLabel(v)} {v.stock_quantity <= 0 ? "— esgotado" : ""}
+                {variantLabel(v)} {v.stock_quantity <= 0 ? t("outOfStockOption") : ""}
               </option>
             ))}
           </select>
@@ -74,17 +77,17 @@ export function AddToCartForm({ product }: { product: ProductWithRelations }) {
       )}
 
       {outOfStock ? (
-        <p className="mt-6 text-sm text-stone">Esgotado de momento.</p>
+        <p className="mt-6 text-sm text-stone">{tCommon("outOfStock")}</p>
       ) : (
         <div className="mt-6 flex flex-wrap items-center gap-4">
           <QuantitySelector quantity={quantity} onChange={setQuantity} max={stock} />
           <Button onClick={handleAdd} variant="primary" disabled={requiresVariant}>
             {added ? (
               <>
-                <Check className="h-4 w-4" /> Adicionado
+                <Check className="h-4 w-4" /> {tCommon("added")}
               </>
             ) : (
-              "Adicionar ao carrinho"
+              tCommon("addToCart")
             )}
           </Button>
         </div>

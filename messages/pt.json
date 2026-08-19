@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "home": "Início",
+    "shop": "Loja",
+    "about": "Sobre",
+    "contact": "Contacto"
+  },
+  "header": {
+    "openSearch": "Pesquisar produtos",
+    "closeSearch": "Fechar pesquisa",
+    "searchPlaceholder": "Pesquisar peças...",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu",
+    "wishlistAria": "Ver favoritos",
+    "cartAria": "Abrir carrinho",
+    "languageAria": "Escolher idioma"
+  },
+  "common": {
+    "addToCart": "Adicionar ao carrinho",
+    "added": "Adicionado",
+    "outOfStock": "Esgotado de momento",
+    "viewAll": "Ver tudo →",
+    "browseShop": "Ver a loja",
+    "loading": "A carregar..."
+  },
+  "breadcrumbs": {
+    "home": "Início"
+  },
+  "cart": {
+    "title": "Carrinho",
+    "close": "Fechar carrinho",
+    "empty": "O teu carrinho está vazio",
+    "emptyLink": "Ver a loja",
+    "subtotal": "Subtotal",
+    "shippingNote": "Envio calculado no checkout.",
+    "checkout": "Finalizar compra",
+    "checkoutLoading": "A abrir pagamento...",
+    "viewCart": "Ver carrinho",
+    "remove": "Remover {name}",
+    "decrease": "Diminuir quantidade",
+    "increase": "Aumentar quantidade",
+    "checkoutError": "Não foi possível iniciar o pagamento."
+  },
+  "wishlist": {
+    "title": "Favoritos",
+    "empty": "Ainda não guardaste nenhuma peça",
+    "emptyText": "Explora a loja e clica no coração das peças que mais gostares para as guardares aqui.",
+    "itemsCount": "{count, plural, one {# peça guardada} other {# peças guardadas}}",
+    "save": "Guardar {name} nos favoritos",
+    "unsave": "Remover {name} dos favoritos",
+    "remove": "Remover {name} dos favoritos"
+  },
+  "shop": {
+    "title": "Loja",
+    "resultsFor": "Resultados para \"{query}\" — ",
+    "itemsAvailable": "{count, plural, one {# peça disponível} other {# peças disponíveis}}",
+    "all": "Todas",
+    "sortBy": "Ordenar por",
+    "sortNewest": "Mais recentes",
+    "sortPriceAsc": "Preço: menor para maior",
+    "sortPriceDesc": "Preço: maior para menor",
+    "noResultsSearch": "Nenhuma peça encontrada para essa pesquisa.",
+    "noResults": "Ainda não há produtos disponíveis.",
+    "tryOther": "Tenta outra palavra-chave.",
+    "comingSoon": "Volta em breve para novas peças.",
+    "paginationPrev": "Anterior",
+    "paginationNext": "Seguinte",
+    "paginationPage": "Página {page} de {totalPages}"
+  },
+  "product": {
+    "option": "Opção",
+    "outOfStockOption": "— esgotado",
+    "alsoLike": "Também pode gostar",
+    "shippingNote": "Envio cuidado, embalado à mão.",
+    "shippingLink": "Ver prazos e custos",
+    "returnsNote": "Devoluções fáceis.",
+    "returnsLink": "Ver política"
+  },
+  "footer": {
+    "tagline": "Peças de artesanato feitas à mão, uma a uma, com materiais naturais.",
+    "navigation": "Navegação",
+    "information": "Informação",
+    "shippingReturns": "Envios & Devoluções",
+    "terms": "Termos & Condições",
+    "rights": "Todos os direitos reservados."
+  },
+  "trust": {
+    "handmade": "Feito à mão",
+    "shipping": "Envio cuidado",
+    "returns": "Devoluções fáceis",
+    "payment": "Pagamento seguro"
+  },
+  "home": {
+    "featured": "Em destaque",
+    "newest": "Novidades",
+    "bestSelling": "Mais vendidos",
+    "noProducts": "Ainda sem produtos disponíveis.",
+    "testimonialsTitle": "O que dizem sobre nós",
+    "testimonialPlaceholder": "Espaço reservado para um testemunho real de cliente.",
+    "newsletterTitle": "Fica a par das novidades",
+    "newsletterText": "Novas peças, ideias e histórias — sem spam.",
+    "newsletterPlaceholder": "O teu email",
+    "subscribe": "Subscrever",
+    "subscribing": "...",
+    "subscribed": "Obrigada! Já estás na lista.",
+    "subscribeError": "Algo correu mal. Tenta novamente."
+  },
+  "checkout": {
+    "successTitle": "Obrigada pela tua compra!",
+    "successText": "A tua encomenda foi confirmada",
+    "successTotal": " — total de {total}",
+    "successEmail": " Enviámos os detalhes para {email}.",
+    "successNote": " Cada peça é preparada com cuidado antes de seguir para envio.",
+    "continueShopping": "Continuar a explorar",
+    "cancelTitle": "Compra cancelada",
+    "cancelText": "Não te preocupes — nada foi cobrado. O teu carrinho continua guardado.",
+    "backToCart": "Voltar ao carrinho"
+  }
+}

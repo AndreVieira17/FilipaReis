@@ -1,14 +1,17 @@
 import { Sparkles, Truck, RotateCcw, ShieldCheck } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { cn } from "@/lib/utils";
 
-const badges = [
-  { icon: Sparkles, label: "Feito à mão" },
-  { icon: Truck, label: "Envio cuidado" },
-  { icon: RotateCcw, label: "Devoluções fáceis" },
-  { icon: ShieldCheck, label: "Pagamento seguro" },
-];
+export async function TrustBadges({ className }: { className?: string }) {
+  const t = await getTranslations("trust");
 
-export function TrustBadges({ className }: { className?: string }) {
+  const badges = [
+    { icon: Sparkles, label: t("handmade") },
+    { icon: Truck, label: t("shipping") },
+    { icon: RotateCcw, label: t("returns") },
+    { icon: ShieldCheck, label: t("payment") },
+  ];
+
   return (
     <ul className={cn("flex flex-wrap items-center justify-center gap-x-8 gap-y-3", className)}>
       {badges.map(({ icon: Icon, label }) => (

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-export function Pagination({
+export async function Pagination({
   page,
   totalPages,
   buildHref,
@@ -12,6 +13,8 @@ export function Pagination({
 }) {
   if (totalPages <= 1) return null;
 
+  const t = await getTranslations("shop");
+
   return (
     <nav
       aria-label="Paginação"
@@ -20,32 +23,32 @@ export function Pagination({
       {page > 1 ? (
         <Link
           href={buildHref(page - 1)}
-          aria-label="Página anterior"
+          aria-label={t("paginationPrev")}
           className="inline-flex items-center gap-1 rounded-full border border-line px-4 py-2 text-xs text-charcoal transition-colors hover:border-charcoal"
         >
-          <ChevronLeft className="h-3.5 w-3.5" /> Anterior
+          <ChevronLeft className="h-3.5 w-3.5" /> {t("paginationPrev")}
         </Link>
       ) : (
         <span className="inline-flex items-center gap-1 rounded-full border border-line px-4 py-2 text-xs text-stone/50">
-          <ChevronLeft className="h-3.5 w-3.5" /> Anterior
+          <ChevronLeft className="h-3.5 w-3.5" /> {t("paginationPrev")}
         </span>
       )}
 
       <span className="text-xs text-stone">
-        Página {page} de {totalPages}
+        {t("paginationPage", { page, totalPages })}
       </span>
 
       {page < totalPages ? (
         <Link
           href={buildHref(page + 1)}
-          aria-label="Página seguinte"
+          aria-label={t("paginationNext")}
           className="inline-flex items-center gap-1 rounded-full border border-line px-4 py-2 text-xs text-charcoal transition-colors hover:border-charcoal"
         >
-          Seguinte <ChevronRight className="h-3.5 w-3.5" />
+          {t("paginationNext")} <ChevronRight className="h-3.5 w-3.5" />
         </Link>
       ) : (
         <span className="inline-flex items-center gap-1 rounded-full border border-line px-4 py-2 text-xs text-stone/50">
-          Seguinte <ChevronRight className="h-3.5 w-3.5" />
+          {t("paginationNext")} <ChevronRight className="h-3.5 w-3.5" />
         </span>
       )}
     </nav>

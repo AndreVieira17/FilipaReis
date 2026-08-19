@@ -3,20 +3,24 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { CartButton } from "./CartButton";
 import { WishlistIcon } from "./WishlistIcon";
 import { HeaderSearch } from "./HeaderSearch";
-
-const NAV_LINKS = [
-  { href: "/", label: "Início" },
-  { href: "/loja", label: "Loja" },
-  { href: "/sobre", label: "Sobre" },
-  { href: "/contacto", label: "Contacto" },
-];
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const t = useTranslations("nav");
+  const tHeader = useTranslations("header");
+
+  const NAV_LINKS = [
+    { href: "/", label: t("home") },
+    { href: "/loja", label: t("shop") },
+    { href: "/sobre", label: t("about") },
+    { href: "/contacto", label: t("contact") },
+  ];
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
@@ -39,11 +43,12 @@ export function Header() {
 
         <div className="flex items-center gap-1">
           <HeaderSearch />
+          <LanguageSwitcher />
           <WishlistIcon />
           <CartButton />
           <button
             type="button"
-            aria-label="Abrir menu"
+            aria-label={menuOpen ? tHeader("closeMenu") : tHeader("openMenu")}
             className="p-2 text-charcoal md:hidden"
             onClick={() => setMenuOpen((v) => !v)}
           >

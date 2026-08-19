@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Heart, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useWishlistStore, useWishlistHasHydrated } from "@/store/wishlist-store";
 import { formatPrice } from "@/lib/utils";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
@@ -14,6 +15,8 @@ export function WishlistClient() {
   const remove = useWishlistStore((s) => s.remove);
   const hasHydrated = useWishlistHasHydrated();
   const addToCart = useCartStore((s) => s.addItem);
+  const t = useTranslations("wishlist");
+  const tCommon = useTranslations("common");
 
   if (!hasHydrated) {
     return <div className="container-app py-24" aria-hidden="true" />;
@@ -23,20 +26,18 @@ export function WishlistClient() {
     return (
       <div className="container-app flex flex-col items-center justify-center gap-4 py-24 text-center">
         <Heart className="h-10 w-10 text-stone" strokeWidth={1.5} />
-        <h1 className="font-display text-2xl text-charcoal">Ainda não guardaste nenhuma peça</h1>
-        <p className="max-w-sm text-sm text-stone">
-          Explora a loja e clica no coração das peças que mais gostares para as guardares aqui.
-        </p>
-        <LinkButton href="/loja" variant="primary">Ver a loja</LinkButton>
+        <h1 className="font-display text-2xl text-charcoal">{t("empty")}</h1>
+        <p className="max-w-sm text-sm text-stone">{t("emptyText")}</p>
+        <LinkButton href="/loja" variant="primary">{tCommon("browseShop")}</LinkButton>
       </div>
     );
   }
 
   return (
     <div className="container-app py-12">
-      <h1 className="font-display text-3xl text-charcoal">Favoritos</h1>
+      <h1 className="font-display text-3xl text-charcoal">{t("title")}</h1>
       <p className="mt-2 text-sm text-stone">
-        {items.length} {items.length === 1 ? "peça guardada" : "peças guardadas"}
+        {t("itemsCount", { count: items.length })}
       </p>
 
       <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
@@ -45,7 +46,7 @@ export function WishlistClient() {
             <button
               type="button"
               onClick={() => remove(item.productId)}
-              aria-label={`Remover ${item.name} dos favoritos`}
+              aria-label={t("remove", { name: item.name })}
               className="absolute right-2 top-2 z-10 inline-flex items-center justify-center rounded-full bg-cream/90 p-2 text-charcoal shadow-sm backdrop-blur transition-colors hover:bg-cream"
             >
               <X className="h-4 w-4" strokeWidth={1.5} />
@@ -88,7 +89,7 @@ export function WishlistClient() {
               }
               className="mt-3 w-full rounded-full border border-line py-2 text-xs text-charcoal transition-colors hover:border-charcoal"
             >
-              Adicionar ao carrinho
+              {tCommon("addToCart")}
             </button>
           </div>
         ))}

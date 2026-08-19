@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getProductBySlug, getRelatedProducts } from "@/lib/products";
 import { ProductMedia } from "@/components/ui/ProductMedia";
 import { ProductCard } from "@/components/ui/ProductCard";
@@ -33,12 +34,14 @@ export default async function ProductPage({
 
   const related = await getRelatedProducts(product.category_id, product.id);
   const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0];
+  const t = await getTranslations("shop");
+  const tProduct = await getTranslations("product");
 
   return (
     <div className="container-app py-12">
       <Breadcrumbs
         items={[
-          { label: "Loja", href: "/loja" },
+          { label: t("title"), href: "/loja" },
           ...(product.category
             ? [{ label: product.category.name_pt, href: `/loja?categoria=${product.category.slug}` }]
             : []),
@@ -81,7 +84,7 @@ export default async function ProductPage({
       {related.length > 0 && (
         <section className="mt-20">
           <h2 className="mb-8 font-display text-2xl text-charcoal">
-            Também pode gostar
+            {tProduct("alsoLike")}
           </h2>
           <div className="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
             {related.map((p) => (

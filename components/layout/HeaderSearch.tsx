@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 export function HeaderSearch() {
@@ -10,6 +11,7 @@ export function HeaderSearch() {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const t = useTranslations("header");
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
@@ -27,7 +29,7 @@ export function HeaderSearch() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Fechar pesquisa" : "Pesquisar produtos"}
+        aria-label={open ? t("closeSearch") : t("openSearch")}
         aria-expanded={open}
         className="p-2 text-charcoal"
       >
@@ -52,7 +54,7 @@ export function HeaderSearch() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Pesquisar peças..."
+            placeholder={t("searchPlaceholder")}
             className="w-full rounded-md border border-line bg-cream px-3 py-2 text-sm text-charcoal placeholder:text-stone/60 focus:outline-none focus:ring-1 focus:ring-clay"
           />
         </form>

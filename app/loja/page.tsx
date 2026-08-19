@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { SortSelect } from "@/components/shop/SortSelect";
@@ -28,9 +29,10 @@ export default async function LojaPage({
     : "newest";
   const page = Math.max(1, Number(searchParams.page) || 1);
 
-  const [{ products, total }, categories] = await Promise.all([
+  const [{ products, total }, categories, t] = await Promise.all([
     getProducts({ categorySlug, query, sort, page }),
     getCategories(),
+    getTranslations("shop"),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(total / PRODUCTS_PER_PAGE));
@@ -51,17 +53,17 @@ export default async function LojaPage({
       <Breadcrumbs
         items={
           activeCategory
-            ? [{ label: "Loja", href: "/loja" }, { label: activeCategory.name_pt }]
-            : [{ label: "Loja" }]
+            ? [{ label: t("title"), href: "/loja" }, { label: activeCategory.name_pt }]
+            : [{ label: t("title") }]
         }
       />
 
       <h1 className="mt-4 font-display text-3xl text-charcoal">
-        {activeCategory ? activeCategory.name_pt : "Loja"}
+        {activeCategory ? activeCategory.name_pt : t("title")}
       </h1>
       <p className="mt-2 text-sm text-stone">
-        {query && <>Resultados para &quot;{query}&quot; — </>}
-        {total} {total === 1 ? "peça disponível" : "peças disponíveis"}
+        {query && <>{t("resultsFor", { query })}</>}
+        {t("itemsAvailable", { count: total })}
       </p>
 
       {categories.length > 0 && (
@@ -75,7 +77,7 @@ export default async function LojaPage({
                 : "border-line text-stone hover:border-charcoal hover:text-charcoal"
             )}
           >
-            Todas
+            {t("all")}
           </Link>
           {categories.map((cat) => (
             <Link
@@ -101,10 +103,10 @@ export default async function LojaPage({
       {products.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 py-24 text-center">
           <p className="text-stone">
-            {query ? "Nenhuma peça encontrada para essa pesquisa." : "Ainda não há produtos disponíveis."}
+            {query ? t("noResultsSearch") : t("noResults")}
           </p>
           <p className="text-sm text-stone/70">
-            {query ? "Tenta outra palavra-chave." : "Volta em breve para novas peças."}
+            {query ? t("tryOther") : t("comingSoon")}
           </p>
         </div>
       ) : (

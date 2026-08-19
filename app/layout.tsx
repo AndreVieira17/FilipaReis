@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -37,18 +39,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="pt">
+    <html lang={locale}>
       <body className={`${fraunces.variable} ${inter.variable} font-sans antialiased`}>
-        <Header />
-        <main className="min-h-[60vh]">{children}</main>
-        <Footer />
-        <CartDrawer />
+        <NextIntlClientProvider messages={messages}>
+          <Header />
+          <main className="min-h-[60vh]">{children}</main>
+          <Footer />
+          <CartDrawer />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

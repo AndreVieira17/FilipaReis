@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   useCartStore,
   useCartSubtotal,
@@ -22,6 +23,7 @@ export function CarrinhoClient() {
   const hasHydrated = useCartHasHydrated();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("cart");
 
   async function handleCheckout() {
     setLoading(true);
@@ -40,11 +42,11 @@ export function CarrinhoClient() {
       });
       const data = await res.json();
       if (!res.ok || !data.url) {
-        throw new Error(data.error ?? "Não foi possível iniciar o pagamento.");
+        throw new Error(data.error ?? t("checkoutError"));
       }
       window.location.href = data.url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Não foi possível iniciar o pagamento.");
+      setError(err instanceof Error ? err.message : t("checkoutError"));
       setLoading(false);
     }
   }
@@ -56,11 +58,11 @@ export function CarrinhoClient() {
   if (items.length === 0) {
     return (
       <div className="container-app py-12">
-        <Breadcrumbs items={[{ label: "Carrinho" }]} />
+        <Breadcrumbs items={[{ label: t("title") }]} />
         <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
           <ShoppingBag className="h-10 w-10 text-stone" strokeWidth={1.5} />
-          <h1 className="font-display text-2xl text-charcoal">O teu carrinho está vazio</h1>
-          <LinkButton href="/loja" variant="primary">Ver a loja</LinkButton>
+          <h1 className="font-display text-2xl text-charcoal">{t("empty")}</h1>
+          <LinkButton href="/loja" variant="primary">{t("emptyLink")}</LinkButton>
         </div>
       </div>
     );
@@ -68,8 +70,8 @@ export function CarrinhoClient() {
 
   return (
     <div className="container-app py-12">
-      <Breadcrumbs items={[{ label: "Carrinho" }]} />
-      <h1 className="mt-6 font-display text-3xl text-charcoal">Carrinho</h1>
+      <Breadcrumbs items={[{ label: t("title") }]} />
+      <h1 className="mt-6 font-display text-3xl text-charcoal">{t("title")}</h1>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-3 lg:gap-16">
         <ul className="divide-y divide-line lg:col-span-2">
@@ -102,7 +104,7 @@ export function CarrinhoClient() {
                   <button
                     type="button"
                     onClick={() => removeItem(item.key)}
-                    aria-label={`Remover ${item.name}`}
+                    aria-label={t("remove", { name: item.name })}
                     className="text-stone hover:text-charcoal"
                   >
                     <X className="h-4 w-4" />
@@ -112,7 +114,7 @@ export function CarrinhoClient() {
                   <div className="inline-flex items-center rounded-full border border-line">
                     <button
                       type="button"
-                      aria-label="Diminuir quantidade"
+                      aria-label={t("decrease")}
                       className="p-2.5 text-charcoal disabled:opacity-30"
                       disabled={item.quantity <= 1}
                       onClick={() => setQuantity(item.key, item.quantity - 1)}
@@ -122,7 +124,7 @@ export function CarrinhoClient() {
                     <span className="w-8 text-center text-sm tabular-nums">{item.quantity}</span>
                     <button
                       type="button"
-                      aria-label="Aumentar quantidade"
+                      aria-label={t("increase")}
                       className="p-2.5 text-charcoal"
                       onClick={() => setQuantity(item.key, item.quantity + 1)}
                     >
@@ -140,10 +142,10 @@ export function CarrinhoClient() {
 
         <div className="h-fit rounded-lg border border-line bg-sand p-6">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-stone">Subtotal</span>
+            <span className="text-stone">{t("subtotal")}</span>
             <span className="text-charcoal">{formatPrice(subtotal)}</span>
           </div>
-          <p className="mt-1 text-xs text-stone">Envio calculado no checkout.</p>
+          <p className="mt-1 text-xs text-stone">{t("shippingNote")}</p>
           {error && <p className="mt-3 text-xs text-clay-dark">{error}</p>}
           <Button
             type="button"
@@ -152,7 +154,7 @@ export function CarrinhoClient() {
             onClick={handleCheckout}
             disabled={loading}
           >
-            {loading ? "A abrir pagamento..." : "Finalizar compra"}
+            {loading ? t("checkoutLoading") : t("checkout")}
           </Button>
         </div>
       </div>

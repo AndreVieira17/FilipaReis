@@ -1,6 +1,7 @@
 "use client";
 
 import { Minus, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function QuantitySelector({
   quantity,
@@ -11,11 +12,13 @@ export function QuantitySelector({
   onChange: (quantity: number) => void;
   max?: number;
 }) {
+  const t = useTranslations("cart");
+
   return (
     <div className="inline-flex items-center rounded-full border border-line">
       <button
         type="button"
-        aria-label="Diminuir quantidade"
+        aria-label={t("decrease")}
         className="p-3 text-charcoal disabled:opacity-30"
         disabled={quantity <= 1}
         onClick={() => onChange(quantity - 1)}
@@ -25,7 +28,7 @@ export function QuantitySelector({
       <span className="w-8 text-center text-sm tabular-nums">{quantity}</span>
       <button
         type="button"
-        aria-label="Aumentar quantidade"
+        aria-label={t("increase")}
         className="p-3 text-charcoal disabled:opacity-30"
         disabled={max !== undefined && quantity >= max}
         onClick={() => onChange(quantity + 1)}

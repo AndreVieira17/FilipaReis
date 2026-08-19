@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "shop": "Boutique",
+    "about": "À propos",
+    "contact": "Contact"
+  },
+  "header": {
+    "openSearch": "Rechercher des produits",
+    "closeSearch": "Fermer la recherche",
+    "searchPlaceholder": "Rechercher des pièces...",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "wishlistAria": "Voir les favoris",
+    "cartAria": "Ouvrir le panier",
+    "languageAria": "Choisir la langue"
+  },
+  "common": {
+    "addToCart": "Ajouter au panier",
+    "added": "Ajouté",
+    "outOfStock": "Actuellement en rupture de stock",
+    "viewAll": "Tout voir →",
+    "browseShop": "Voir la boutique",
+    "loading": "Chargement..."
+  },
+  "breadcrumbs": {
+    "home": "Accueil"
+  },
+  "cart": {
+    "title": "Panier",
+    "close": "Fermer le panier",
+    "empty": "Ton panier est vide",
+    "emptyLink": "Voir la boutique",
+    "subtotal": "Sous-total",
+    "shippingNote": "Livraison calculée au paiement.",
+    "checkout": "Finaliser l'achat",
+    "checkoutLoading": "Ouverture du paiement...",
+    "viewCart": "Voir le panier",
+    "remove": "Retirer {name}",
+    "decrease": "Diminuer la quantité",
+    "increase": "Augmenter la quantité",
+    "checkoutError": "Impossible de démarrer le paiement."
+  },
+  "wishlist": {
+    "title": "Favoris",
+    "empty": "Tu n'as encore enregistré aucune pièce",
+    "emptyText": "Explore la boutique et clique sur le cœur des pièces que tu préfères pour les enregistrer ici.",
+    "itemsCount": "{count, plural, one {# pièce enregistrée} other {# pièces enregistrées}}",
+    "save": "Ajouter {name} aux favoris",
+    "unsave": "Retirer {name} des favoris",
+    "remove": "Retirer {name} des favoris"
+  },
+  "shop": {
+    "title": "Boutique",
+    "resultsFor": "Résultats pour « {query} » — ",
+    "itemsAvailable": "{count, plural, one {# pièce disponible} other {# pièces disponibles}}",
+    "all": "Tout",
+    "sortBy": "Trier par",
+    "sortNewest": "Plus récents",
+    "sortPriceAsc": "Prix : croissant",
+    "sortPriceDesc": "Prix : décroissant",
+    "noResultsSearch": "Aucune pièce trouvée pour cette recherche.",
+    "noResults": "Aucun produit disponible pour le moment.",
+    "tryOther": "Essaie un autre mot-clé.",
+    "comingSoon": "Reviens bientôt pour de nouvelles pièces.",
+    "paginationPrev": "Précédent",
+    "paginationNext": "Suivant",
+    "paginationPage": "Page {page} sur {totalPages}"
+  },
+  "product": {
+    "option": "Option",
+    "outOfStockOption": "— épuisé",
+    "alsoLike": "Tu pourrais aussi aimer",
+    "shippingNote": "Envoi soigné, emballé à la main.",
+    "shippingLink": "Voir délais et frais",
+    "returnsNote": "Retours faciles.",
+    "returnsLink": "Voir la politique"
+  },
+  "footer": {
+    "tagline": "Pièces artisanales, fabriquées une à une avec des matériaux naturels.",
+    "navigation": "Navigation",
+    "information": "Informations",
+    "shippingReturns": "Livraison & Retours",
+    "terms": "Conditions Générales",
+    "rights": "Tous droits réservés."
+  },
+  "trust": {
+    "handmade": "Fait main",
+    "shipping": "Envoi soigné",
+    "returns": "Retours faciles",
+    "payment": "Paiement sécurisé"
+  },
+  "home": {
+    "featured": "En vedette",
+    "newest": "Nouveautés",
+    "bestSelling": "Meilleures ventes",
+    "noProducts": "Aucun produit disponible pour le moment.",
+    "testimonialsTitle": "Ce que l'on dit de nous",
+    "testimonialPlaceholder": "Espace réservé pour un vrai témoignage client.",
+    "newsletterTitle": "Reste informé·e des nouveautés",
+    "newsletterText": "Nouvelles pièces, idées et histoires — sans spam.",
+    "newsletterPlaceholder": "Ton email",
+    "subscribe": "S'abonner",
+    "subscribing": "...",
+    "subscribed": "Merci ! Tu es sur la liste.",
+    "subscribeError": "Une erreur est survenue. Réessaie."
+  },
+  "checkout": {
+    "successTitle": "Merci pour ta commande !",
+    "successText": "Ta commande a été confirmée",
+    "successTotal": " — total de {total}",
+    "successEmail": " Nous avons envoyé les détails à {email}.",
+    "successNote": " Chaque pièce est préparée avec soin avant l'envoi.",
+    "continueShopping": "Continuer à explorer",
+    "cancelTitle": "Achat annulé",
+    "cancelText": "Ne t'inquiète pas — rien n'a été débité. Ton panier est toujours enregistré.",
+    "backToCart": "Retour au panier"
+  }
+}

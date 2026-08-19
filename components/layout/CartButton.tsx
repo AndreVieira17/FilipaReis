@@ -1,18 +1,20 @@
 "use client";
 
 import { ShoppingBag } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCartCount, useCartStore, useCartHasHydrated } from "@/store/cart-store";
 
 export function CartButton() {
   const count = useCartCount();
   const hasHydrated = useCartHasHydrated();
   const toggle = useCartStore((s) => s.toggle);
+  const t = useTranslations("header");
 
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label="Abrir carrinho"
+      aria-label={t("cartAria")}
       className="relative p-2 text-charcoal"
     >
       <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />

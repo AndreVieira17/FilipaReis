@@ -1,0 +1,119 @@
+{
+  "nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "header": {
+    "openSearch": "Search products",
+    "closeSearch": "Close search",
+    "searchPlaceholder": "Search pieces...",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "wishlistAria": "View wishlist",
+    "cartAria": "Open cart",
+    "languageAria": "Choose language"
+  },
+  "common": {
+    "addToCart": "Add to cart",
+    "added": "Added",
+    "outOfStock": "Currently out of stock",
+    "viewAll": "View all →",
+    "browseShop": "Browse the shop",
+    "loading": "Loading..."
+  },
+  "breadcrumbs": {
+    "home": "Home"
+  },
+  "cart": {
+    "title": "Cart",
+    "close": "Close cart",
+    "empty": "Your cart is empty",
+    "emptyLink": "Browse the shop",
+    "subtotal": "Subtotal",
+    "shippingNote": "Shipping calculated at checkout.",
+    "checkout": "Checkout",
+    "checkoutLoading": "Opening payment...",
+    "viewCart": "View cart",
+    "remove": "Remove {name}",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "checkoutError": "Could not start payment."
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "empty": "You haven't saved any pieces yet",
+    "emptyText": "Browse the shop and tap the heart on pieces you love to save them here.",
+    "itemsCount": "{count, plural, one {# saved piece} other {# saved pieces}}",
+    "save": "Save {name} to wishlist",
+    "unsave": "Remove {name} from wishlist",
+    "remove": "Remove {name} from wishlist"
+  },
+  "shop": {
+    "title": "Shop",
+    "resultsFor": "Results for \"{query}\" — ",
+    "itemsAvailable": "{count, plural, one {# piece available} other {# pieces available}}",
+    "all": "All",
+    "sortBy": "Sort by",
+    "sortNewest": "Newest",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low",
+    "noResultsSearch": "No pieces found for that search.",
+    "noResults": "No products available yet.",
+    "tryOther": "Try a different keyword.",
+    "comingSoon": "Check back soon for new pieces.",
+    "paginationPrev": "Previous",
+    "paginationNext": "Next",
+    "paginationPage": "Page {page} of {totalPages}"
+  },
+  "product": {
+    "option": "Option",
+    "outOfStockOption": "— sold out",
+    "alsoLike": "You may also like",
+    "shippingNote": "Carefully shipped, hand-packed.",
+    "shippingLink": "See delivery times & costs",
+    "returnsNote": "Easy returns.",
+    "returnsLink": "See policy"
+  },
+  "footer": {
+    "tagline": "Handmade pieces, crafted one at a time with natural materials.",
+    "navigation": "Navigation",
+    "information": "Information",
+    "shippingReturns": "Shipping & Returns",
+    "terms": "Terms & Conditions",
+    "rights": "All rights reserved."
+  },
+  "trust": {
+    "handmade": "Handmade",
+    "shipping": "Careful shipping",
+    "returns": "Easy returns",
+    "payment": "Secure payment"
+  },
+  "home": {
+    "featured": "Featured",
+    "newest": "New in",
+    "bestSelling": "Best sellers",
+    "noProducts": "No products available yet.",
+    "testimonialsTitle": "What people say",
+    "testimonialPlaceholder": "Space reserved for a real customer testimonial.",
+    "newsletterTitle": "Stay in the loop",
+    "newsletterText": "New pieces, stories and ideas — no spam.",
+    "newsletterPlaceholder": "Your email",
+    "subscribe": "Subscribe",
+    "subscribing": "...",
+    "subscribed": "Thank you! You're on the list.",
+    "subscribeError": "Something went wrong. Please try again."
+  },
+  "checkout": {
+    "successTitle": "Thank you for your order!",
+    "successText": "Your order has been confirmed",
+    "successTotal": " — total of {total}",
+    "successEmail": " We've sent the details to {email}.",
+    "successNote": " Every piece is carefully prepared before it ships.",
+    "continueShopping": "Keep browsing",
+    "cancelTitle": "Purchase cancelled",
+    "cancelText": "Don't worry — nothing was charged. Your cart is still saved.",
+    "backToCart": "Back to cart"
+  }
+}
