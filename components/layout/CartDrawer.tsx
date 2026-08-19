@@ -104,7 +104,7 @@ export function CartDrawer() {
                       <button
                         type="button"
                         aria-label={t("decrease")}
-                        className="p-2 text-charcoal disabled:opacity-30"
+                        className="rounded-full p-2 text-charcoal transition-colors hover:bg-sand disabled:pointer-events-none disabled:opacity-30 disabled:hover:bg-transparent"
                         disabled={item.quantity <= 1}
                         onClick={() => setQuantity(item.key, item.quantity - 1)}
                       >
@@ -116,7 +116,7 @@ export function CartDrawer() {
                       <button
                         type="button"
                         aria-label={t("increase")}
-                        className="p-2 text-charcoal"
+                        className="rounded-full p-2 text-charcoal transition-colors hover:bg-sand"
                         onClick={() => setQuantity(item.key, item.quantity + 1)}
                       >
                         <Plus className="h-3 w-3" />

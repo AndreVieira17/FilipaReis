@@ -49,7 +49,7 @@ export function Header() {
           <button
             type="button"
             aria-label={menuOpen ? tHeader("closeMenu") : tHeader("openMenu")}
-            className="p-2 text-charcoal md:hidden"
+            className="rounded-full p-2 text-charcoal transition-colors hover:bg-sand md:hidden"
             onClick={() => setMenuOpen((v) => !v)}
           >
             {menuOpen ? (
@@ -73,7 +73,7 @@ export function Header() {
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="py-3 text-sm text-charcoal/80"
+              className="py-3 text-sm text-charcoal/80 transition-colors hover:text-charcoal"
             >
               {link.label}
             </Link>

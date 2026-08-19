@@ -11,7 +11,7 @@ export function WishlistIcon() {
   const t = useTranslations("header");
 
   return (
-    <Link href="/favoritos" aria-label={t("wishlistAria")} className="relative p-2 text-charcoal">
+    <Link href="/favoritos" aria-label={t("wishlistAria")} className="relative rounded-full p-2 text-charcoal transition-colors hover:bg-sand">
       <Heart className="h-5 w-5" strokeWidth={1.5} />
       {hasHydrated && count > 0 && (
         <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-clay text-[10px] leading-none text-cream">

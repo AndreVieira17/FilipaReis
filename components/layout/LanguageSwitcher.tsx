@@ -26,7 +26,7 @@ export function LanguageSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-label={t("languageAria")}
         aria-expanded={open}
-        className="p-2 text-charcoal"
+        className="rounded-full p-2 text-charcoal transition-colors hover:bg-sand"
       >
         <Globe className="h-5 w-5" strokeWidth={1.5} />
       </button>

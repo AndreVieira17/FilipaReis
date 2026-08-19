@@ -31,7 +31,7 @@ export function HeaderSearch() {
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? t("closeSearch") : t("openSearch")}
         aria-expanded={open}
-        className="p-2 text-charcoal"
+        className="rounded-full p-2 text-charcoal transition-colors hover:bg-sand"
       >
         {open ? (
           <X className="h-5 w-5" strokeWidth={1.5} />
