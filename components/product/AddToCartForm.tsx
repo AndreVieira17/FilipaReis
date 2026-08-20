@@ -4,9 +4,10 @@ import { useMemo, useState } from "react";
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ProductVariant, ProductWithRelations } from "@/lib/types";
-import { formatPrice, variantLabel } from "@/lib/utils";
+import { variantLabel } from "@/lib/utils";
 import { QuantitySelector } from "@/components/ui/QuantitySelector";
 import { Button } from "@/components/ui/Button";
+import { Price } from "@/components/ui/Price";
 import { useCartStore } from "@/store/cart-store";
 
 export function AddToCartForm({ product }: { product: ProductWithRelations }) {
@@ -55,7 +56,7 @@ export function AddToCartForm({ product }: { product: ProductWithRelations }) {
 
   return (
     <div className="mt-6">
-      <p className="text-xl text-charcoal">{formatPrice(unitPrice)}</p>
+      <Price price={unitPrice} className="text-xl text-charcoal" />
 
       {product.variants.length > 0 && (
         <div className="mt-6">
