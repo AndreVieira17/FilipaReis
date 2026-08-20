@@ -9,6 +9,7 @@ import { CartButton } from "./CartButton";
 import { WishlistIcon } from "./WishlistIcon";
 import { HeaderSearch } from "./HeaderSearch";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { AccountIcon } from "./AccountIcon";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -44,6 +45,7 @@ export function Header() {
         <div className="flex items-center gap-1">
           <HeaderSearch />
           <LanguageSwitcher />
+          <AccountIcon />
           <WishlistIcon />
           <CartButton />
           <button

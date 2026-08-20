@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient as createServerSupabaseClient } from "@/lib/supabase/server";
 import {
   totalWeightGrams,
   resolveShippingCost,
@@ -133,9 +134,18 @@ export async function POST(request: Request) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
+  // Utilizador autenticado (opcional) — se existir, a encomenda fica
+  // associada à conta; caso contrário segue como checkout de convidado.
+  const supabaseAuth = createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabaseAuth.auth.getUser();
+
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     line_items,
+    client_reference_id: user?.id,
+    customer_email: user?.email,
     shipping_address_collection: {
       allowed_countries: SHIPPING_COUNTRIES[
         shippingRegion

@@ -46,6 +46,7 @@ export async function POST(request: Request) {
       .from("orders")
       .insert({
         order_number: `FR-${Date.now()}`,
+        user_id: session.client_reference_id || null,
         guest_email: session.customer_details?.email,
         status: "paid",
         shipping_first_name: firstName ?? "",

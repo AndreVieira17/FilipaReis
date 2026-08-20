@@ -20,6 +20,7 @@ import { ProductMedia } from "@/components/ui/ProductMedia";
 import { Button, LinkButton } from "@/components/ui/Button";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { PaymentMethods } from "@/components/checkout/PaymentMethods";
+import { useSupabaseUser } from "@/lib/hooks/useSupabaseUser";
 
 const REGIONS: ShippingRegion[] = ["continental", "acores", "madeira", "ue"];
 
@@ -35,6 +36,8 @@ export function CarrinhoClient() {
   const t = useTranslations("cart");
   const tShip = useTranslations("shipping");
   const tBanner = useTranslations("shippingBanner");
+  const tCheckout = useTranslations("checkout");
+  const { user, loading: authLoading } = useSupabaseUser();
 
   const weightGrams = useMemo(
     () =>
@@ -201,6 +204,26 @@ export function CarrinhoClient() {
               <span className="text-charcoal">{formatPrice(total)}</span>
             </div>
           </div>
+
+          {!authLoading && (
+            <div className="mt-4 border-t border-line pt-4">
+              {user ? (
+                <p className="text-xs text-stone">
+                  {tCheckout("loggedInAs", { email: user.email ?? "" })}
+                </p>
+              ) : (
+                <div className="text-xs text-stone">
+                  <p>{tCheckout("accountOptionNote")}</p>
+                  <Link
+                    href="/conta/entrar?redirect=/carrinho"
+                    className="mt-1 inline-block text-charcoal underline underline-offset-4"
+                  >
+                    {tCheckout("accountOption")}
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
 
           {error && <p className="mt-3 text-xs text-clay-dark">{error}</p>}
           <Button
