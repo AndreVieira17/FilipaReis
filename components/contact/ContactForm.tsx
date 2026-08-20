@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 
 export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const t = useTranslations("contact");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,7 +36,7 @@ export function ContactForm() {
   if (status === "sent") {
     return (
       <div className="rounded-lg border border-line bg-sand p-6 text-sm text-charcoal">
-        Mensagem enviada. Obrigada pelo contacto — respondemos em breve.
+        {t("success")}
       </div>
     );
   }
@@ -42,7 +44,7 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="name" className="mb-1.5 block text-xs text-stone">Nome</label>
+        <label htmlFor="name" className="mb-1.5 block text-xs text-stone">{t("nameLabel")}</label>
         <input
           id="name"
           name="name"
@@ -52,7 +54,7 @@ export function ContactForm() {
         />
       </div>
       <div>
-        <label htmlFor="email" className="mb-1.5 block text-xs text-stone">Email</label>
+        <label htmlFor="email" className="mb-1.5 block text-xs text-stone">{t("emailLabel")}</label>
         <input
           id="email"
           name="email"
@@ -62,7 +64,7 @@ export function ContactForm() {
         />
       </div>
       <div>
-        <label htmlFor="message" className="mb-1.5 block text-xs text-stone">Mensagem</label>
+        <label htmlFor="message" className="mb-1.5 block text-xs text-stone">{t("messageLabel")}</label>
         <textarea
           id="message"
           name="message"
@@ -72,12 +74,10 @@ export function ContactForm() {
         />
       </div>
       {status === "error" && (
-        <p className="text-sm text-clay-dark">
-          Não foi possível enviar a mensagem. Tenta novamente.
-        </p>
+        <p className="text-sm text-clay-dark">{t("error")}</p>
       )}
       <Button type="submit" variant="primary" className="w-full" disabled={status === "sending"}>
-        {status === "sending" ? "A enviar..." : "Enviar mensagem"}
+        {status === "sending" ? t("sending") : t("send")}
       </Button>
     </form>
   );

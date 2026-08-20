@@ -10,7 +10,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
   const t = useTranslations("breadcrumbs");
 
   return (
-    <nav aria-label="Trilho de navegação" className="text-xs text-stone">
+    <nav aria-label={t("navAria")} className="text-xs text-stone">
       <ol className="flex flex-wrap items-center gap-1.5">
         <li>
           <Link href="/" className="transition-colors hover:text-charcoal">

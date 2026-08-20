@@ -17,7 +17,7 @@ export async function Pagination({
 
   return (
     <nav
-      aria-label="Paginação"
+      aria-label={t("paginationAria")}
       className="mt-16 flex items-center justify-center gap-4"
     >
       {page > 1 ? (

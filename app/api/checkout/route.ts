@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
+import { getTranslations } from "next-intl/server";
 import { stripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient as createServerSupabaseClient } from "@/lib/supabase/server";
@@ -7,7 +8,6 @@ import {
   totalWeightGrams,
   resolveShippingCost,
   SHIPPING_COUNTRIES,
-  REGION_LABELS,
   type ShippingRegion,
 } from "@/lib/shipping";
 
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     : "continental";
 
   if (items.length === 0) {
-    return NextResponse.json({ error: "Carrinho vazio." }, { status: 400 });
+    return NextResponse.json({ error: "EMPTY_CART" }, { status: 400 });
   }
 
   const supabase = createAdminClient();
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
     if (!product || !product.is_active) {
       return NextResponse.json(
-        { error: "Um dos produtos no carrinho já não está disponível." },
+        { error: "PRODUCT_UNAVAILABLE" },
         { status: 400 }
       );
     }
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
 
       if (!variant || !variant.is_active) {
         return NextResponse.json(
-          { error: "Uma das opções escolhidas já não está disponível." },
+          { error: "VARIANT_UNAVAILABLE" },
           { status: 400 }
         );
       }
@@ -115,10 +115,12 @@ export async function POST(request: Request) {
 
   if (shippingCost === null) {
     return NextResponse.json(
-      { error: "Não há envio disponível para o peso desta encomenda. Contacta-nos." },
+      { error: "SHIPPING_UNAVAILABLE" },
       { status: 400 }
     );
   }
+
+  const tShipping = await getTranslations("shipping");
 
   line_items.push({
     quantity: 1,
@@ -126,7 +128,7 @@ export async function POST(request: Request) {
       currency: "eur",
       unit_amount: Math.round(shippingCost * 100),
       product_data: {
-        name: `Portes de envio (${REGION_LABELS[shippingRegion]})`,
+        name: tShipping("lineItemLabel", { region: tShipping(shippingRegion) }),
         metadata: { is_shipping: "true" },
       },
     },

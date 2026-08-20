@@ -39,6 +39,13 @@ export function CarrinhoClient() {
   const tCheckout = useTranslations("checkout");
   const { user, loading: authLoading } = useSupabaseUser();
 
+  const CHECKOUT_ERROR_KEYS: Record<string, string> = {
+    EMPTY_CART: "errorEmptyCart",
+    PRODUCT_UNAVAILABLE: "errorProductUnavailable",
+    VARIANT_UNAVAILABLE: "errorVariantUnavailable",
+    SHIPPING_UNAVAILABLE: "errorShippingUnavailable",
+  };
+
   const weightGrams = useMemo(
     () =>
       totalWeightGrams(
@@ -67,7 +74,8 @@ export function CarrinhoClient() {
       });
       const data = await res.json();
       if (!res.ok || !data.url) {
-        throw new Error(data.error ?? t("checkoutError"));
+        const key = CHECKOUT_ERROR_KEYS[data.error as string];
+        throw new Error(key ? t(key) : t("checkoutError"));
       }
       window.location.href = data.url;
     } catch (err) {

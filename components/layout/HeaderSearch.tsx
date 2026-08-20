@@ -25,7 +25,7 @@ export function HeaderSearch() {
   }
 
   return (
-    <div className="relative">
+    <>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -42,7 +42,7 @@ export function HeaderSearch() {
 
       <div
         className={cn(
-          "absolute right-0 top-full z-30 mt-2 w-[min(90vw,320px)] origin-top-right rounded-lg border border-line bg-cream p-2 shadow-lg transition-all duration-150",
+          "absolute right-0 top-full z-30 mt-2 w-[min(calc(100vw-2.5rem),320px)] origin-top-right rounded-lg border border-line bg-cream p-2 shadow-lg transition-all duration-150",
           open
             ? "translate-y-0 opacity-100"
             : "pointer-events-none -translate-y-1 opacity-0"
@@ -59,6 +59,6 @@ export function HeaderSearch() {
           />
         </form>
       </div>
-    </div>
+    </>
   );
 }

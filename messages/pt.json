@@ -24,7 +24,8 @@
     "loading": "A carregar..."
   },
   "breadcrumbs": {
-    "home": "Início"
+    "home": "Início",
+    "navAria": "Trilho de navegação"
   },
   "shippingBanner": {
     "freeAbove": "Portes grátis em compras acima de {threshold}",
@@ -55,7 +56,11 @@
     "remove": "Remover {name}",
     "decrease": "Diminuir quantidade",
     "increase": "Aumentar quantidade",
-    "checkoutError": "Não foi possível iniciar o pagamento."
+    "checkoutError": "Não foi possível iniciar o pagamento.",
+    "errorEmptyCart": "Carrinho vazio.",
+    "errorProductUnavailable": "Um dos produtos no carrinho já não está disponível.",
+    "errorVariantUnavailable": "Uma das opções escolhidas já não está disponível.",
+    "errorShippingUnavailable": "Não há envio disponível para o peso desta encomenda. Contacta-nos."
   },
   "wishlist": {
     "title": "Favoritos",
@@ -81,7 +86,8 @@
     "comingSoon": "Volta em breve para novas peças.",
     "paginationPrev": "Anterior",
     "paginationNext": "Seguinte",
-    "paginationPage": "Página {page} de {totalPages}"
+    "paginationPage": "Página {page} de {totalPages}",
+    "paginationAria": "Paginação"
   },
   "product": {
     "option": "Opção",
@@ -107,6 +113,16 @@
     "payment": "Pagamento seguro"
   },
   "home": {
+    "heroEyebrow": "Feito à mão, com tempo",
+    "heroTitle": "Peças únicas, moldadas à mão por Filipa Reis",
+    "heroText": "Cada peça nasce devagar, com materiais naturais e um processo inteiramente artesanal — para durar e para contar uma história única.",
+    "heroCtaShop": "Ver a loja",
+    "heroCtaAbout": "Conhecer a história",
+    "heroImageLabel": "Fotografia principal em breve",
+    "aboutTitle": "A mão por trás das peças",
+    "aboutText": "Filipa Reis dedica-se ao artesanato há vários anos, trabalhando materiais naturais com técnicas tradicionais. Cada peça é pensada e feita à mão, uma de cada vez.",
+    "aboutLink": "Conhecer a história completa",
+    "aboutImageLabel": "Fotografia da artesã em breve",
     "featured": "Em destaque",
     "newest": "Novidades",
     "bestSelling": "Mais vendidos",
@@ -145,7 +161,12 @@
     "noOrders": "Ainda não fizeste nenhuma encomenda.",
     "orderNumber": "Encomenda",
     "orderTotal": "Total",
-    "accountAria": "A minha conta"
+    "accountAria": "A minha conta",
+    "statusPending": "Pendente",
+    "statusPaid": "Paga",
+    "statusShipped": "Enviada",
+    "statusDelivered": "Entregue",
+    "statusCancelled": "Cancelada"
   },
   "checkout": {
     "guestOption": "Continuar como convidado",
@@ -162,5 +183,36 @@
     "cancelTitle": "Compra cancelada",
     "cancelText": "Não te preocupes — nada foi cobrado. O teu carrinho continua guardado.",
     "backToCart": "Voltar ao carrinho"
+  },
+  "contact": {
+    "eyebrow": "Contacto",
+    "title": "Fala connosco",
+    "intro": "Dúvidas sobre uma peça, encomendas personalizadas ou apenas para dizer olá — respondemos assim que possível.",
+    "nameLabel": "Nome",
+    "emailLabel": "Email",
+    "messageLabel": "Mensagem",
+    "send": "Enviar mensagem",
+    "sending": "A enviar...",
+    "success": "Mensagem enviada. Obrigada pelo contacto — respondemos em breve.",
+    "error": "Não foi possível enviar a mensagem. Tenta novamente."
+  },
+  "about": {
+    "eyebrow": "Sobre",
+    "title": "A história por trás de cada peça",
+    "imageLabel": "Fotografia da Filipa em breve",
+    "introPlaceholder": "[PLACEHOLDER] Filipa Reis começou a trabalhar em artesanato há vários anos, motivada pelo gosto de criar peças únicas com as próprias mãos. Substituir este parágrafo pela história real: como começou, o que a inspirou, e o percurso até hoje.",
+    "techniqueTitle": "Técnica",
+    "techniquePlaceholder": "[PLACEHOLDER] Descrever aqui as técnicas artesanais utilizadas — por exemplo, tecelagem, modelagem em argila, trabalho em latão, entre outras — e o que as torna especiais.",
+    "materialsTitle": "Materiais",
+    "materialsPlaceholder": "[PLACEHOLDER] Descrever os materiais naturais utilizados nas peças (ex: latão, pedras naturais, argila, fio encerado) e a origem/sustentabilidade dos mesmos.",
+    "philosophyTitle": "Filosofia",
+    "philosophyPlaceholder": "[PLACEHOLDER] Um parágrafo sobre a filosofia do trabalho: o porquê de cada peça ser feita à mão, devagar, e o que isso representa para a marca Filipa Reis."
+  },
+  "legal": {
+    "shippingSectionTitle": "Envios",
+    "shippingText": "[PLACEHOLDER] Indicar prazos de envio, transportadora utilizada, custos de portes e zonas cobertas (ex: Portugal Continental, Ilhas, Internacional).",
+    "returnsSectionTitle": "Devoluções",
+    "returnsText": "[PLACEHOLDER] Indicar prazo legal de devolução (ex: 14 dias), condições em que o produto pode ser devolvido, e processo para solicitar a devolução ou troca.",
+    "termsText": "[PLACEHOLDER] Este texto é provisório. Antes de colocar o site em produção, substituir por termos e condições reais que cubram: identificação da empresa/vendedora, condições de venda, preços e pagamento, propriedade intelectual, e resolução de litígios."
   }
 }

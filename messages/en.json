@@ -24,7 +24,8 @@
     "loading": "Loading..."
   },
   "breadcrumbs": {
-    "home": "Home"
+    "home": "Home",
+    "navAria": "Breadcrumb"
   },
   "shippingBanner": {
     "freeAbove": "Free shipping on orders above {threshold}",
@@ -55,7 +56,11 @@
     "remove": "Remove {name}",
     "decrease": "Decrease quantity",
     "increase": "Increase quantity",
-    "checkoutError": "Could not start payment."
+    "checkoutError": "Could not start payment.",
+    "errorEmptyCart": "Empty cart.",
+    "errorProductUnavailable": "One of the products in your cart is no longer available.",
+    "errorVariantUnavailable": "One of the selected options is no longer available.",
+    "errorShippingUnavailable": "No shipping available for this order's weight. Please contact us."
   },
   "wishlist": {
     "title": "Wishlist",
@@ -81,7 +86,8 @@
     "comingSoon": "Check back soon for new pieces.",
     "paginationPrev": "Previous",
     "paginationNext": "Next",
-    "paginationPage": "Page {page} of {totalPages}"
+    "paginationPage": "Page {page} of {totalPages}",
+    "paginationAria": "Pagination"
   },
   "product": {
     "option": "Option",
@@ -107,6 +113,16 @@
     "payment": "Secure payment"
   },
   "home": {
+    "heroEyebrow": "Handmade, unhurried",
+    "heroTitle": "Unique pieces, handcrafted by Filipa Reis",
+    "heroText": "Every piece is made slowly, with natural materials and an entirely handmade process — built to last and to tell a unique story.",
+    "heroCtaShop": "Browse the shop",
+    "heroCtaAbout": "Discover the story",
+    "heroImageLabel": "Main photograph coming soon",
+    "aboutTitle": "The hands behind the pieces",
+    "aboutText": "Filipa Reis has been dedicated to craftsmanship for several years, working natural materials with traditional techniques. Each piece is thought out and made by hand, one at a time.",
+    "aboutLink": "Discover the full story",
+    "aboutImageLabel": "Photograph of the artisan coming soon",
     "featured": "Featured",
     "newest": "New in",
     "bestSelling": "Best sellers",
@@ -145,7 +161,12 @@
     "noOrders": "You haven't placed any orders yet.",
     "orderNumber": "Order",
     "orderTotal": "Total",
-    "accountAria": "My account"
+    "accountAria": "My account",
+    "statusPending": "Pending",
+    "statusPaid": "Paid",
+    "statusShipped": "Shipped",
+    "statusDelivered": "Delivered",
+    "statusCancelled": "Cancelled"
   },
   "checkout": {
     "guestOption": "Continue as guest",
@@ -162,5 +183,36 @@
     "cancelTitle": "Purchase cancelled",
     "cancelText": "Don't worry — nothing was charged. Your cart is still saved.",
     "backToCart": "Back to cart"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Get in touch",
+    "intro": "Questions about a piece, custom orders, or just want to say hi — we'll get back to you as soon as we can.",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "messageLabel": "Message",
+    "send": "Send message",
+    "sending": "Sending...",
+    "success": "Message sent. Thanks for reaching out — we'll reply soon.",
+    "error": "Could not send the message. Please try again."
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "The story behind every piece",
+    "imageLabel": "Photograph of Filipa coming soon",
+    "introPlaceholder": "[PLACEHOLDER] Filipa Reis started working in craftsmanship several years ago, driven by a love of creating unique pieces by hand. Replace this paragraph with the real story: how it began, what inspired it, and the journey so far.",
+    "techniqueTitle": "Technique",
+    "techniquePlaceholder": "[PLACEHOLDER] Describe the handcrafting techniques used here — for example weaving, clay modelling, brass work, among others — and what makes them special.",
+    "materialsTitle": "Materials",
+    "materialsPlaceholder": "[PLACEHOLDER] Describe the natural materials used in the pieces (e.g. brass, natural stones, clay, waxed thread) and their origin/sustainability.",
+    "philosophyTitle": "Philosophy",
+    "philosophyPlaceholder": "[PLACEHOLDER] A paragraph about the philosophy behind the work: why each piece is made by hand, slowly, and what that means for the Filipa Reis brand."
+  },
+  "legal": {
+    "shippingSectionTitle": "Shipping",
+    "shippingText": "[PLACEHOLDER] State shipping timeframes, carrier used, shipping costs and covered areas (e.g. Mainland Portugal, Islands, International).",
+    "returnsSectionTitle": "Returns",
+    "returnsText": "[PLACEHOLDER] State the legal return period (e.g. 14 days), the conditions under which a product can be returned, and the process for requesting a return or exchange.",
+    "termsText": "[PLACEHOLDER] This text is provisional. Before putting the site into production, replace it with real terms and conditions covering: seller/company identification, sales conditions, pricing and payment, intellectual property, and dispute resolution."
   }
 }
