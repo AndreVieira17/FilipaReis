@@ -252,16 +252,19 @@ async function sincronizarStripe(
   }
 
   if (!stripePriceId || precoMudou) {
+    const precoAntigoId = stripePriceId;
     const novoPreco = await stripe.prices.create({
       product: stripeProductId,
       unit_amount: unitAmount,
       currency: "eur",
     });
-    if (stripePriceId) {
-      await stripe.prices.update(stripePriceId, { active: false });
-    }
     stripePriceId = novoPreco.id;
+    // O preço tem de deixar de ser o "default_price" do produto antes de
+    // poder ser arquivado — por isso trocamos o default primeiro.
     await stripe.products.update(stripeProductId, { default_price: stripePriceId });
+    if (precoAntigoId) {
+      await stripe.prices.update(precoAntigoId, { active: false });
+    }
   }
 
   return { stripeProductId, stripePriceId };
