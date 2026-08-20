@@ -14,7 +14,7 @@ export function Hero() {
         <p className="mt-5 max-w-md text-balance text-stone">
           {/* PLACEHOLDER — substituir por frase de efeito definitiva */}
           Cada peça nasce devagar, com materiais naturais e um processo
-          inteiramente artesanal — para durar e para contar uma história.
+          inteiramente artesanal — para durar e para contar uma história única.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
           <LinkButton href="/loja" variant="primary">
