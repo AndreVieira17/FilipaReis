@@ -26,6 +26,22 @@
   "breadcrumbs": {
     "home": "Home"
   },
+  "shippingBanner": {
+    "freeAbove": "Free shipping on orders above {threshold}",
+    "belowThreshold": "{remaining} away from free shipping"
+  },
+  "shipping": {
+    "region": "Shipping region",
+    "continental": "Mainland Portugal",
+    "acores": "Azores",
+    "madeira": "Madeira",
+    "ue": "European Union",
+    "cost": "Shipping",
+    "free": "Free",
+    "unavailable": "Shipping unavailable for this weight — contact us",
+    "lineItemLabel": "Shipping ({region})",
+    "total": "Total"
+  },
   "cart": {
     "title": "Cart",
     "close": "Close cart",
@@ -106,6 +122,7 @@
     "subscribeError": "Something went wrong. Please try again."
   },
   "checkout": {
+    "securePayment": "Secure payment processed by Stripe",
     "successTitle": "Thank you for your order!",
     "successText": "Your order has been confirmed",
     "successTotal": " — total of {total}",

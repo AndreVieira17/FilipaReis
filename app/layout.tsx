@@ -6,6 +6,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
+import { FreeShippingBanner } from "@/components/layout/FreeShippingBanner";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -51,7 +52,10 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={`${fraunces.variable} ${inter.variable} font-sans antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <Header />
+          <div className="sticky top-0 z-40">
+            <FreeShippingBanner />
+            <Header />
+          </div>
           <main className="min-h-[60vh]">{children}</main>
           <Footer />
           <CartDrawer />

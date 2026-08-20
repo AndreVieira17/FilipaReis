@@ -26,6 +26,22 @@
   "breadcrumbs": {
     "home": "Inicio"
   },
+  "shippingBanner": {
+    "freeAbove": "Envío gratis en compras superiores a {threshold}",
+    "belowThreshold": "Te faltan {remaining} para el envío gratis"
+  },
+  "shipping": {
+    "region": "Región de envío",
+    "continental": "Portugal Continental",
+    "acores": "Azores",
+    "madeira": "Madeira",
+    "ue": "Unión Europea",
+    "cost": "Envío",
+    "free": "Gratis",
+    "unavailable": "Envío no disponible para este peso — contáctanos",
+    "lineItemLabel": "Envío ({region})",
+    "total": "Total"
+  },
   "cart": {
     "title": "Carrito",
     "close": "Cerrar carrito",
@@ -106,6 +122,7 @@
     "subscribeError": "Algo salió mal. Inténtalo de nuevo."
   },
   "checkout": {
+    "securePayment": "Pago seguro procesado por Stripe",
     "successTitle": "¡Gracias por tu compra!",
     "successText": "Tu pedido ha sido confirmado",
     "successTotal": " — total de {total}",

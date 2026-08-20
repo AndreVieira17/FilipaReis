@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Heart, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useWishlistStore, useWishlistHasHydrated } from "@/store/wishlist-store";
 import { formatPrice } from "@/lib/utils";
-import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import { ProductMedia } from "@/components/ui/ProductMedia";
 import { LinkButton } from "@/components/ui/Button";
 import { useCartStore } from "@/store/cart-store";
 
@@ -52,19 +51,12 @@ export function WishlistClient() {
               <X className="h-4 w-4" strokeWidth={1.5} />
             </button>
             <Link href={`/loja/${item.slug}`} className="block">
-              <div className="aspect-square overflow-hidden rounded-md">
-                {item.image ? (
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    width={400}
-                    height={400}
-                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-                  />
-                ) : (
-                  <PlaceholderImage className="h-full w-full" />
-                )}
-              </div>
+              <ProductMedia
+                src={item.image}
+                alt={item.name}
+                imageClassName="transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                sizes="(min-width: 1024px) 25vw, 50vw"
+              />
               <div className="mt-3 flex items-start justify-between gap-2">
                 <div>
                   <h3 className="text-sm text-charcoal">{item.name}</h3>
@@ -85,6 +77,7 @@ export function WishlistClient() {
                   variantLabel: null,
                   unitPrice: item.price,
                   image: item.image,
+                  weightGrams: item.weightGrams,
                 })
               }
               className="mt-3 w-full rounded-full border border-line py-2 text-xs text-charcoal transition-colors hover:border-charcoal"

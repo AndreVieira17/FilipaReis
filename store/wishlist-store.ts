@@ -8,6 +8,7 @@ export type WishlistItem = {
   price: number;
   image: string | null;
   category: string | null;
+  weightGrams: number | null;
 };
 
 type WishlistState = {

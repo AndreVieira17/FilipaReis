@@ -33,6 +33,15 @@ export async function POST(request: Request) {
     const fullName = shippingDetails?.name ?? session.customer_details?.name ?? "";
     const [firstName, ...rest] = fullName.split(" ");
 
+    const allLineItems = session.line_items?.data ?? [];
+    const isShippingLine = (li: Stripe.LineItem) =>
+      (li.price?.product as Stripe.Product | undefined)?.metadata?.is_shipping === "true";
+
+    const shippingLine = allLineItems.find(isShippingLine);
+    const productLineItems = allLineItems.filter((li) => !isShippingLine(li));
+    const shippingCost = (shippingLine?.price?.unit_amount ?? 0) / 100;
+    const subtotal = (session.amount_subtotal ?? 0) / 100 - shippingCost;
+
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -47,8 +56,8 @@ export async function POST(request: Request) {
         shipping_city: address?.city ?? "",
         shipping_country: address?.country ?? "",
         shipping_phone: session.customer_details?.phone ?? "",
-        subtotal: (session.amount_subtotal ?? 0) / 100,
-        shipping_cost: (session.total_details?.amount_shipping ?? 0) / 100,
+        subtotal,
+        shipping_cost: shippingCost,
         total: (session.amount_total ?? 0) / 100,
         stripe_payment_intent_id:
           typeof session.payment_intent === "string" ? session.payment_intent : null,
@@ -64,8 +73,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ received: true, warning: "order_insert_failed" });
     }
 
-    const lineItems = session.line_items?.data ?? [];
-    for (const li of lineItems) {
+    for (const li of productLineItems) {
       const product = li.price?.product as Stripe.Product | undefined;
       const productId = product?.metadata?.product_id || null;
       const variantId = product?.metadata?.variant_id || null;

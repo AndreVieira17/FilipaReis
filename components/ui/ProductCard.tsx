@@ -1,26 +1,31 @@
 import Link from "next/link";
 import type { ProductWithRelations } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
+import { primaryImageUrl } from "@/lib/utils";
 import { ProductMedia } from "./ProductMedia";
 import { WishlistButton } from "./WishlistButton";
+import { Price } from "./Price";
 
 export function ProductCard({ product }: { product: ProductWithRelations }) {
-  const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0];
+  const image = primaryImageUrl(product.images);
 
   return (
     <Link href={`/loja/${product.slug}`} className="group block">
-      <div className="relative aspect-square overflow-hidden rounded-md">
-        <div className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.04]">
-          <ProductMedia images={product.images} alt={product.name_pt} />
-        </div>
+      <div className="relative">
+        <ProductMedia
+          src={image}
+          alt={product.name_pt}
+          imageClassName="transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="shadow-sm transition-shadow duration-300 group-hover:shadow-md"
+        />
         <WishlistButton
           product={{
             productId: product.id,
             slug: product.slug,
             name: product.name_pt,
             price: product.price,
-            image: primaryImage?.url ?? null,
+            image,
             category: product.category?.name_pt ?? null,
+            weightGrams: product.weight_grams,
           }}
           className="absolute right-2 top-2"
         />
@@ -34,9 +39,7 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
             <p className="mt-0.5 text-xs text-stone">{product.category.name_pt}</p>
           )}
         </div>
-        <p className="whitespace-nowrap text-sm text-charcoal">
-          {formatPrice(product.price)}
-        </p>
+        <Price price={product.price} className="whitespace-nowrap text-sm text-charcoal" />
       </div>
     </Link>
   );

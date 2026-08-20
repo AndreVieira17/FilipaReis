@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCartStore, useCartSubtotal } from "@/store/cart-store";
 import { formatPrice, cn } from "@/lib/utils";
-import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import { ProductMedia } from "@/components/ui/ProductMedia";
 
 export function CartDrawer() {
   const isOpen = useCartStore((s) => s.isOpen);
@@ -67,19 +66,12 @@ export function CartDrawer() {
             <ul className="space-y-5">
               {items.map((item) => (
                 <li key={item.key} className="flex gap-3">
-                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md">
-                    {item.image ? (
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={80}
-                        height={80}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <PlaceholderImage className="h-full w-full" />
-                    )}
-                  </div>
+                  <ProductMedia
+                    src={item.image}
+                    alt={item.name}
+                    sizes="80px"
+                    className="h-20 w-20 shrink-0"
+                  />
                   <div className="flex flex-1 flex-col justify-between">
                     <div className="flex items-start justify-between gap-2">
                       <div>

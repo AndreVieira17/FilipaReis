@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  totalWeightGrams,
+  resolveShippingCost,
+  SHIPPING_COUNTRIES,
+  REGION_LABELS,
+  type ShippingRegion,
+} from "@/lib/shipping";
 
 type CheckoutItem = {
   productId: string;
@@ -8,9 +16,14 @@ type CheckoutItem = {
   quantity: number;
 };
 
+const VALID_REGIONS: ShippingRegion[] = ["continental", "acores", "madeira", "ue"];
+
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const items: CheckoutItem[] = Array.isArray(body?.items) ? body.items : [];
+  const shippingRegion: ShippingRegion = VALID_REGIONS.includes(body?.shippingRegion)
+    ? body.shippingRegion
+    : "continental";
 
   if (items.length === 0) {
     return NextResponse.json({ error: "Carrinho vazio." }, { status: 400 });
@@ -30,12 +43,15 @@ export async function POST(request: Request) {
     };
   }> = [];
 
+  let subtotal = 0;
+  const weightItems: { weightGrams: number | null; quantity: number }[] = [];
+
   for (const item of items) {
     const quantity = Math.max(1, Math.floor(Number(item.quantity) || 1));
 
     const { data: product } = await supabase
       .from("products")
-      .select("id, name_pt, price, is_active, images:product_images(url,is_primary,order_index)")
+      .select("id, name_pt, price, is_active, weight_grams, images:product_images(url,is_primary,order_index)")
       .eq("id", item.productId)
       .maybeSingle();
 
@@ -66,6 +82,9 @@ export async function POST(request: Request) {
       label = [variant.size, variant.color, variant.material].filter(Boolean).join(" / ");
     }
 
+    subtotal += unitPrice * quantity;
+    weightItems.push({ weightGrams: product.weight_grams, quantity });
+
     const images = (product.images ?? []) as Array<{
       url: string;
       is_primary: boolean;
@@ -90,12 +109,38 @@ export async function POST(request: Request) {
     });
   }
 
+  const weightGrams = totalWeightGrams(weightItems);
+  const shippingCost = resolveShippingCost(shippingRegion, weightGrams, subtotal);
+
+  if (shippingCost === null) {
+    return NextResponse.json(
+      { error: "Não há envio disponível para o peso desta encomenda. Contacta-nos." },
+      { status: 400 }
+    );
+  }
+
+  line_items.push({
+    quantity: 1,
+    price_data: {
+      currency: "eur",
+      unit_amount: Math.round(shippingCost * 100),
+      product_data: {
+        name: `Portes de envio (${REGION_LABELS[shippingRegion]})`,
+        metadata: { is_shipping: "true" },
+      },
+    },
+  });
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     line_items,
-    shipping_address_collection: { allowed_countries: ["PT"] },
+    shipping_address_collection: {
+      allowed_countries: SHIPPING_COUNTRIES[
+        shippingRegion
+      ] as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[],
+    },
     phone_number_collection: { enabled: true },
     success_url: `${siteUrl}/checkout/sucesso?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${siteUrl}/checkout/cancelado`,

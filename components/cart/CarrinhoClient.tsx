@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
@@ -11,9 +10,18 @@ import {
   useCartHasHydrated,
 } from "@/store/cart-store";
 import { formatPrice } from "@/lib/utils";
-import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import {
+  totalWeightGrams,
+  resolveShippingCost,
+  FREE_SHIPPING_THRESHOLD,
+  type ShippingRegion,
+} from "@/lib/shipping";
+import { ProductMedia } from "@/components/ui/ProductMedia";
 import { Button, LinkButton } from "@/components/ui/Button";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { PaymentMethods } from "@/components/checkout/PaymentMethods";
+
+const REGIONS: ShippingRegion[] = ["continental", "acores", "madeira", "ue"];
 
 export function CarrinhoClient() {
   const items = useCartStore((s) => s.items);
@@ -21,9 +29,22 @@ export function CarrinhoClient() {
   const removeItem = useCartStore((s) => s.removeItem);
   const subtotal = useCartSubtotal();
   const hasHydrated = useCartHasHydrated();
+  const [region, setRegion] = useState<ShippingRegion>("continental");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations("cart");
+  const tShip = useTranslations("shipping");
+  const tBanner = useTranslations("shippingBanner");
+
+  const weightGrams = useMemo(
+    () =>
+      totalWeightGrams(
+        items.map((i) => ({ weightGrams: i.weightGrams, quantity: i.quantity }))
+      ),
+    [items]
+  );
+  const shippingCost = resolveShippingCost(region, weightGrams, subtotal);
+  const total = subtotal + (shippingCost ?? 0);
 
   async function handleCheckout() {
     setLoading(true);
@@ -38,6 +59,7 @@ export function CarrinhoClient() {
             variantId: i.variantId,
             quantity: i.quantity,
           })),
+          shippingRegion: region,
         }),
       });
       const data = await res.json();
@@ -77,19 +99,12 @@ export function CarrinhoClient() {
         <ul className="divide-y divide-line lg:col-span-2">
           {items.map((item) => (
             <li key={item.key} className="flex gap-4 py-6 first:pt-0">
-              <div className="h-24 w-24 shrink-0 overflow-hidden rounded-md">
-                {item.image ? (
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    width={96}
-                    height={96}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <PlaceholderImage className="h-full w-full" />
-                )}
-              </div>
+              <ProductMedia
+                src={item.image}
+                alt={item.name}
+                sizes="96px"
+                className="h-24 w-24 shrink-0"
+              />
               <div className="flex flex-1 flex-col justify-between">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -141,21 +156,63 @@ export function CarrinhoClient() {
         </ul>
 
         <div className="h-fit rounded-lg border border-line bg-sand p-6">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-stone">{t("subtotal")}</span>
-            <span className="text-charcoal">{formatPrice(subtotal)}</span>
+          <div>
+            <label htmlFor="shipping-region" className="mb-1.5 block text-xs text-stone">
+              {tShip("region")}
+            </label>
+            <select
+              id="shipping-region"
+              value={region}
+              onChange={(e) => setRegion(e.target.value as ShippingRegion)}
+              className="w-full rounded-md border border-line bg-cream px-3 py-2 text-sm text-charcoal focus:outline-none focus:ring-1 focus:ring-clay"
+            >
+              {REGIONS.map((r) => (
+                <option key={r} value={r}>
+                  {tShip(r)}
+                </option>
+              ))}
+            </select>
           </div>
-          <p className="mt-1 text-xs text-stone">{t("shippingNote")}</p>
+
+          <div className="mt-4 space-y-2 border-t border-line pt-4 text-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-stone">{t("subtotal")}</span>
+              <span className="text-charcoal">{formatPrice(subtotal)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-stone">{tShip("cost")}</span>
+              {shippingCost === null ? (
+                <span className="text-clay-dark">{tShip("unavailable")}</span>
+              ) : shippingCost === 0 ? (
+                <span className="text-clay-dark">{tShip("free")}</span>
+              ) : (
+                <span className="text-charcoal">{formatPrice(shippingCost)}</span>
+              )}
+            </div>
+            {subtotal < FREE_SHIPPING_THRESHOLD && shippingCost !== null && shippingCost > 0 && (
+              <p className="text-xs text-stone">
+                {tBanner("belowThreshold", {
+                  remaining: formatPrice(FREE_SHIPPING_THRESHOLD - subtotal),
+                })}
+              </p>
+            )}
+            <div className="flex items-center justify-between border-t border-line pt-2 text-base">
+              <span className="text-charcoal">{tShip("total")}</span>
+              <span className="text-charcoal">{formatPrice(total)}</span>
+            </div>
+          </div>
+
           {error && <p className="mt-3 text-xs text-clay-dark">{error}</p>}
           <Button
             type="button"
             variant="primary"
             className="mt-6 w-full"
             onClick={handleCheckout}
-            disabled={loading}
+            disabled={loading || shippingCost === null}
           >
             {loading ? t("checkoutLoading") : t("checkout")}
           </Button>
+          <PaymentMethods className="mt-4" />
         </div>
       </div>
     </div>

@@ -31,13 +31,6 @@ body {
   }
 
   .placeholder-media {
-    @apply flex items-center justify-center bg-sand text-stone/60;
-    background-image: repeating-linear-gradient(
-      45deg,
-      rgba(107, 98, 89, 0.06),
-      rgba(107, 98, 89, 0.06) 1px,
-      transparent 1px,
-      transparent 12px
-    );
+    @apply flex items-center justify-center bg-neutral-100 text-stone/50;
   }
 }

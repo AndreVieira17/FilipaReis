@@ -1,39 +1,48 @@
 import Image from "next/image";
 import { PlaceholderImage } from "./PlaceholderImage";
-import type { ProductImage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
+/**
+ * Enquadramento consistente para qualquer imagem de produto: quadrado 1:1,
+ * fundo branco, objeto centrado com object-contain — para que fotos com
+ * proporções/tamanhos diferentes fiquem sempre visualmente iguais.
+ */
 export function ProductMedia({
-  images,
+  src,
   alt,
   className,
+  imageClassName,
   sizes,
   priority,
+  placeholderLabel,
 }: {
-  images: ProductImage[];
+  src: string | null;
   alt: string;
   className?: string;
+  imageClassName?: string;
   sizes?: string;
   priority?: boolean;
+  placeholderLabel?: string;
 }) {
-  const primary = images.find((i) => i.is_primary) ?? images[0];
-
-  if (!primary) {
-    return (
-      <PlaceholderImage className={cn("h-full w-full", className)} label="Fotografia em breve" />
-    );
-  }
-
   return (
-    <div className={cn("relative h-full w-full", className)}>
-      <Image
-        src={primary.url}
-        alt={primary.alt_text_pt || alt}
-        fill
-        sizes={sizes ?? "(min-width: 1024px) 25vw, 50vw"}
-        className="object-cover"
-        priority={priority}
-      />
+    <div
+      className={cn(
+        "relative aspect-square w-full overflow-hidden rounded-md bg-white",
+        className
+      )}
+    >
+      {src ? (
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={sizes ?? "(min-width: 1024px) 25vw, 50vw"}
+          className={cn("object-contain p-4", imageClassName)}
+          priority={priority}
+        />
+      ) : (
+        <PlaceholderImage className="h-full w-full" label={placeholderLabel} />
+      )}
     </div>
   );
 }

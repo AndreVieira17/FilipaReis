@@ -45,6 +45,7 @@ export function AddToCartForm({ product }: { product: ProductWithRelations }) {
         variantLabel: selectedVariant ? variantLabel(selectedVariant) : null,
         unitPrice,
         image: primaryImage?.url ?? null,
+        weightGrams: product.weight_grams,
       },
       quantity
     );

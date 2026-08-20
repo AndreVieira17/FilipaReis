@@ -66,5 +66,6 @@ export type CartItem = {
   variantLabel: string | null;
   unitPrice: number;
   image: string | null;
+  weightGrams: number | null;
   quantity: number;
 };

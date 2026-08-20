@@ -1,4 +1,4 @@
-import { ImageIcon } from "lucide-react";
+import { Gem } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function PlaceholderImage({
@@ -11,7 +11,7 @@ export function PlaceholderImage({
   return (
     <div className={cn("placeholder-media", className)}>
       <div className="flex flex-col items-center gap-2 p-4 text-center">
-        <ImageIcon className="h-6 w-6" strokeWidth={1.5} />
+        <Gem className="h-6 w-6" strokeWidth={1.25} />
         {label && <span className="text-xs">{label}</span>}
       </div>
     </div>

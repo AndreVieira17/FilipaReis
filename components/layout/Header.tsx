@@ -23,7 +23,7 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
+    <header className="border-b border-line bg-cream/90 backdrop-blur">
       <div className="container-app flex h-16 items-center justify-between">
         <Link href="/" className="font-display text-lg tracking-wide text-charcoal">
           Filipa Reis

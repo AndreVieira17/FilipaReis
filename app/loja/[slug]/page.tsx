@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getProductBySlug, getRelatedProducts } from "@/lib/products";
+import { primaryImageUrl } from "@/lib/utils";
 import { ProductMedia } from "@/components/ui/ProductMedia";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -33,7 +34,7 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const related = await getRelatedProducts(product.category_id, product.id);
-  const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0];
+  const image = primaryImageUrl(product.images);
   const t = await getTranslations("shop");
   const tProduct = await getTranslations("product");
 
@@ -50,16 +51,17 @@ export default async function ProductPage({
       />
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
-        <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-          <ProductMedia images={product.images} alt={product.name_pt} priority />
+        <div className="relative">
+          <ProductMedia src={image} alt={product.name_pt} priority />
           <WishlistButton
             product={{
               productId: product.id,
               slug: product.slug,
               name: product.name_pt,
               price: product.price,
-              image: primaryImage?.url ?? null,
+              image,
               category: product.category?.name_pt ?? null,
+              weightGrams: product.weight_grams,
             }}
             className="absolute right-3 top-3"
           />
