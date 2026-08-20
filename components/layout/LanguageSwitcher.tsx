@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Globe } from "lucide-react";
 import { locales, localeNames, type Locale } from "@/i18n/config";
@@ -9,14 +8,22 @@ import { cn } from "@/lib/utils";
 
 export function LanguageSwitcher() {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("header");
 
   function handleSelect(next: Locale) {
+    if (next === locale) {
+      setOpen(false);
+      return;
+    }
     document.cookie = `locale=${next}; path=/; max-age=31536000; SameSite=Lax`;
     setOpen(false);
-    router.refresh();
+    // Recarrega o documento por completo em vez de usar router.refresh():
+    // isto limpa o Router Cache do browser, garantindo que toda a
+    // navegação seguinte (incluindo páginas já pré-carregadas ou
+    // visitadas antes da troca) volta a pedir o conteúdo ao servidor já
+    // no novo idioma, em vez de reutilizar uma versão em cache antiga.
+    window.location.reload();
   }
 
   return (
