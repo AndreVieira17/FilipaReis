@@ -19,7 +19,7 @@ export function QuantitySelector({
       <button
         type="button"
         aria-label={t("decrease")}
-        className="rounded-full p-3 text-charcoal transition-colors hover:bg-sand disabled:pointer-events-none disabled:opacity-30 disabled:hover:bg-transparent"
+        className="rounded-full p-3.5 text-charcoal transition-colors hover:bg-sand disabled:pointer-events-none disabled:opacity-30 disabled:hover:bg-transparent"
         disabled={quantity <= 1}
         onClick={() => onChange(quantity - 1)}
       >
@@ -29,7 +29,7 @@ export function QuantitySelector({
       <button
         type="button"
         aria-label={t("increase")}
-        className="rounded-full p-3 text-charcoal transition-colors hover:bg-sand disabled:pointer-events-none disabled:opacity-30 disabled:hover:bg-transparent"
+        className="rounded-full p-3.5 text-charcoal transition-colors hover:bg-sand disabled:pointer-events-none disabled:opacity-30 disabled:hover:bg-transparent"
         disabled={max !== undefined && quantity >= max}
         onClick={() => onChange(quantity + 1)}
       >

@@ -131,7 +131,7 @@ export function CarrinhoClient() {
                     type="button"
                     onClick={() => removeItem(item.key)}
                     aria-label={t("remove", { name: item.name })}
-                    className="text-stone hover:text-charcoal"
+                    className="-m-2 p-2 text-stone hover:text-charcoal"
                   >
                     <X className="h-4 w-4" />
                   </button>

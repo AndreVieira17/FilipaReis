@@ -1,0 +1,15 @@
+{
+  "nome": "Colar Bruma",
+  "nome_en": "Bruma Necklace",
+  "descricao": "Colar artesanal em latão, com pedra natural e fio encerado. Cada peça é única e feita à mão.",
+  "preco": 32.5,
+  "peso_gramas": 120,
+  "categoria": "colares",
+  "stock": 5,
+  "destaque": false,
+  "imagens": ["colar-bruma-1.jpg", "colar-bruma-2.jpg"],
+  "variantes": [
+    { "tamanho": "Curto", "ajuste_preco": 0, "stock": 3 },
+    { "tamanho": "Longo", "ajuste_preco": 3, "stock": 2 }
+  ]
+}
