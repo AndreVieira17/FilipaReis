@@ -75,7 +75,7 @@ export default async function ProductPage({
           )}
           <h1 className="mt-2 font-display text-3xl text-charcoal">{product.name_pt}</h1>
           {product.description_pt && (
-            <p className="mt-4 text-stone">{product.description_pt}</p>
+            <p className="mt-4 whitespace-pre-line text-stone">{product.description_pt}</p>
           )}
 
           <AddToCartForm product={product} />

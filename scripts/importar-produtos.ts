@@ -75,16 +75,38 @@ function montarDescricao(produto: ProdutoInput): string | undefined {
   return partes.length > 0 ? partes.join("\n\n") : undefined;
 }
 
+/**
+ * Lê um número mesmo com símbolos à volta (ex: "15€", "6g", "22,5 €") —
+ * aceita vírgula ou ponto como separador decimal.
+ */
 function paraNumero(valor: string): number | null {
   const limpo = valor.trim().replace(",", ".");
-  const numero = Number(limpo);
+  const encontrado = limpo.match(/-?\d+(\.\d+)?/);
+  if (!encontrado) return null;
+  const numero = Number(encontrado[0]);
   return Number.isFinite(numero) ? numero : null;
 }
 
+const CAMPOS_RECONHECIDOS = new Set([
+  "nome",
+  "nome_en",
+  "descricao",
+  "preco",
+  "peso",
+  "medida",
+  "categoria",
+  "stock",
+  "destaque",
+  "variante",
+]);
+
 /**
- * Lê um info.txt no formato "campo: valor" (uma linha por campo).
- * Linhas vazias ou que começam por "#" são ignoradas. O campo "variante"
- * pode repetir-se em várias linhas, no formato:
+ * Lê um info.txt no formato "campo: valor". A maioria dos campos ocupa
+ * uma linha, mas "descricao" pode continuar por várias linhas/parágrafos —
+ * tudo o que vem a seguir, até à próxima linha que comece por um campo
+ * conhecido (ex: "preco:"), é tratado como continuação desse campo.
+ * Linhas que começam por "#" são sempre ignoradas (comentários). O campo
+ * "variante" pode repetir-se em várias linhas, no formato:
  *   variante: Curto | 0 | 3
  *   (nome da opção | ajuste no preço | stock — os dois últimos são opcionais)
  */
@@ -92,29 +114,46 @@ function parseInfoTxt(conteudo: string): { campos: Map<string, string>; variante
   const campos = new Map<string, string>();
   const variantes: ProdutoVariante[] = [];
 
+  let campoAtual: string | null = null;
+  let linhasCampoAtual: string[] = [];
+
+  function fecharCampoAtual() {
+    if (campoAtual === null) return;
+    const valor = linhasCampoAtual.join("\n").trim();
+    if (valor !== "") campos.set(campoAtual, valor);
+    campoAtual = null;
+    linhasCampoAtual = [];
+  }
+
   const linhas = conteudo.split(/\r?\n/);
   for (const linhaOriginal of linhas) {
-    const linha = linhaOriginal.trim();
-    if (linha === "" || linha.startsWith("#")) continue;
+    if (linhaOriginal.trim().startsWith("#")) continue;
 
-    const idx = linha.indexOf(":");
-    if (idx === -1) continue;
+    const idx = linhaOriginal.indexOf(":");
+    const chavePossivel = idx !== -1 ? normalizar(linhaOriginal.slice(0, idx)) : null;
 
-    const chave = normalizar(linha.slice(0, idx));
-    const valor = linha.slice(idx + 1).trim();
-
-    if (chave === "variante") {
-      const partes = valor.split("|").map((p) => p.trim());
-      variantes.push({
-        tamanho: partes[0] ?? "",
-        ajuste_preco: partes[1] ? (paraNumero(partes[1]) ?? 0) : 0,
-        stock: partes[2] ? (paraNumero(partes[2]) ?? STOCK_ILIMITADO) : STOCK_ILIMITADO,
-      });
-      continue;
+    if (chavePossivel && CAMPOS_RECONHECIDOS.has(chavePossivel)) {
+      if (chavePossivel === "variante") {
+        fecharCampoAtual();
+        const valor = linhaOriginal.slice(idx + 1).trim();
+        const partes = valor.split("|").map((p) => p.trim());
+        variantes.push({
+          tamanho: partes[0] ?? "",
+          ajuste_preco: partes[1] ? (paraNumero(partes[1]) ?? 0) : 0,
+          stock: partes[2] ? (paraNumero(partes[2]) ?? STOCK_ILIMITADO) : STOCK_ILIMITADO,
+        });
+        continue;
+      }
+      fecharCampoAtual();
+      campoAtual = chavePossivel;
+      const restoDaLinha = linhaOriginal.slice(idx + 1).trim();
+      linhasCampoAtual = restoDaLinha !== "" ? [restoDaLinha] : [];
+    } else if (campoAtual !== null) {
+      // Continuação (incluindo linhas em branco, para manter parágrafos).
+      linhasCampoAtual.push(linhaOriginal.trim());
     }
-
-    campos.set(chave, valor);
   }
+  fecharCampoAtual();
 
   return { campos, variantes };
 }
