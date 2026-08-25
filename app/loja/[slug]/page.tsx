@@ -3,12 +3,12 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getProductBySlug, getRelatedProducts } from "@/lib/products";
 import { primaryImageUrl } from "@/lib/utils";
-import { ProductMedia } from "@/components/ui/ProductMedia";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { WishlistButton } from "@/components/ui/WishlistButton";
 import { AddToCartForm } from "@/components/product/AddToCartForm";
 import { ShippingInfo } from "@/components/product/ShippingInfo";
+import { ProductGallery } from "@/components/product/ProductGallery";
 
 export const revalidate = 60;
 
@@ -52,7 +52,7 @@ export default async function ProductPage({
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
         <div className="relative">
-          <ProductMedia src={image} alt={product.name_pt} priority />
+          <ProductGallery images={product.images} alt={product.name_pt} />
           <WishlistButton
             product={{
               productId: product.id,

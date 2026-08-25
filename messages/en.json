@@ -96,7 +96,8 @@
     "shippingNote": "Carefully shipped, hand-packed.",
     "shippingLink": "See delivery times & costs",
     "returnsNote": "Easy returns.",
-    "returnsLink": "See policy"
+    "returnsLink": "See policy",
+    "photoAria": "View photo {n}"
   },
   "footer": {
     "tagline": "Handmade pieces, crafted one at a time with natural materials.",

@@ -96,7 +96,8 @@
     "shippingNote": "Envio cuidado, embalado à mão.",
     "shippingLink": "Ver prazos e custos",
     "returnsNote": "Devoluções fáceis.",
-    "returnsLink": "Ver política"
+    "returnsLink": "Ver política",
+    "photoAria": "Ver fotografia {n}"
   },
   "footer": {
     "tagline": "Peças de artesanato feitas à mão, uma a uma, com materiais naturais.",
