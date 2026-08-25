@@ -4,7 +4,7 @@ Guia para adicionares peças novas ao site sem teres de mexer manualmente no Sup
 
 ## Passo 0 — configuração única (só precisas de fazer isto uma vez)
 
-Antes da primeira utilização, a tabela de produtos no Supabase precisa de duas colunas novas, onde o script vai guardar a ligação a cada produto/preço criado na Stripe.
+Se ainda não correste este passo antes, a tabela de produtos no Supabase precisa de duas colunas novas, onde o script vai guardar a ligação a cada produto/preço criado na Stripe.
 
 1. Abre o [painel do Supabase](https://supabase.com/dashboard) do projeto.
 2. Vai a **SQL Editor** → **New query**.
@@ -18,40 +18,42 @@ Antes da primeira utilização, a tabela de produtos no Supabase precisa de duas
 
 Não precisas de repetir isto — é um passo único. Se te esqueceres, o script deteta isso sozinho e mostra-te esta mesma instrução antes de fazer seja o que for.
 
-## Passo 1 — preparar as imagens
+## Passo 1 — uma pasta por produto
 
-1. Tira ou exporta as fotos de cada peça (jpg, png ou webp).
-2. Coloca todas as imagens de todos os produtos dentro da pasta `produtos-novos/imagens/`.
-3. Nomeia cada ficheiro seguindo este padrão: `nome-do-produto-numero.extensão`
+Dentro da pasta `produtos-novos/`, cria uma pasta para cada peça — o nome da pasta pode ser o que quiseres (ex: `colar-conchas`, `brincos-prata`). Usa a pasta `produtos-novos/exemplo-produto/` como modelo: copia-a, dá-lhe um nome novo, e substitui o conteúdo.
 
-   Exemplos:
-   - `colar-bruma-1.jpg`, `colar-bruma-2.jpg` — duas fotos do "Colar Bruma"
-   - `brincos-lua-1.png` — uma foto dos "Brincos Lua"
+Dentro da pasta de cada produto colocas duas coisas:
 
-   A primeira imagem que listares no ficheiro do produto (ver passo 2) é a que aparece como foto principal na loja.
+1. **As fotos** — quantas quiseres, com o nome que quiseres (ex: `foto1.jpg`, `foto2.jpg`). O script associa automaticamente todas as imagens que encontrar dentro dessa pasta. A primeira, por ordem alfabética/numérica, é usada como foto principal na loja — por isso, se quiseres controlar qual aparece primeiro, numera-as (`foto1.jpg`, `foto2.jpg`, ...).
+2. **Um ficheiro `info.txt`** — com os dados do produto, um por linha, no formato `campo: valor`. Podes escrever e guardar este ficheiro no Bloco de Notas normalmente.
 
-## Passo 2 — preencher um ficheiro por produto
+Fica assim, por exemplo:
 
-1. Copia o ficheiro `produtos-novos/produto-exemplo.json` e dá-lhe um nome novo, por exemplo `colar-bruma.json`. Mantém-no dentro da pasta `produtos-novos/` (não dentro de `imagens/`).
-2. Substitui os valores por dados do produto real. Um ficheiro completo tem este aspeto:
+```
+produtos-novos/
+  colar-conchas/
+    foto1.jpg
+    foto2.jpg
+    info.txt
+  brincos-prata/
+    foto1.jpg
+    info.txt
+```
 
-   ```json
-   {
-     "nome": "Colar Bruma",
-     "nome_en": "Bruma Necklace",
-     "descricao": "Colar artesanal em latão, com pedra natural e fio encerado.",
-     "preco": 32.5,
-     "peso_gramas": 120,
-     "categoria": "colares",
-     "stock": 5,
-     "destaque": false,
-     "imagens": ["colar-bruma-1.jpg", "colar-bruma-2.jpg"],
-     "variantes": [
-       { "tamanho": "Curto", "ajuste_preco": 0, "stock": 3 },
-       { "tamanho": "Longo", "ajuste_preco": 3, "stock": 2 }
-     ]
-   }
-   ```
+## Passo 2 — preencher o info.txt
+
+Abre o `info.txt` no Bloco de Notas e preenche um campo por linha:
+
+```
+nome: Colar de Conchas
+nome_en: Shell Necklace
+descricao: Colar artesanal feito à mão com conchas naturais apanhadas na costa portuguesa.
+preco: 24.90
+peso: 35
+categoria: Colares
+stock: 5
+destaque: nao
+```
 
 ### O que cada campo significa
 
@@ -59,19 +61,28 @@ Não precisas de repetir isto — é um passo único. Se te esqueceres, o script
 |---|---|---|
 | `nome` | Sim | Nome do produto em português, como aparece no site. |
 | `nome_en` | Não | Nome em inglês (guardado para o futuro — o site ainda mostra sempre o nome em português). Se não preencheres, usa o `nome`. |
-| `descricao` | Não | Texto descritivo da peça, mostrado na página do produto. |
-| `preco` | Sim | Preço em euros, com ponto decimal (ex: `32.5`, não `32,5`). |
-| `peso_gramas` | Sim | Peso da peça já embalada, em gramas — usado para calcular os portes de envio. |
-| `categoria` | Sim | Uma destas palavras, exatamente: `colares`, `brincos`, `pulseiras`, `aneis`, `broches`, `conjuntos`. |
+| `descricao` | Não | Texto descritivo da peça, mostrado na página do produto (uma linha só). |
+| `preco` | Sim | Preço em euros. Podes escrever com ponto ou vírgula (`24.90` ou `24,90`). |
+| `peso` | Sim | Peso da peça já embalada, em gramas — usado para calcular os portes de envio. |
+| `categoria` | Sim | Uma destas: `Colares`, `Brincos`, `Pulseiras`, `Anéis`, `Broches`, `Conjuntos`. Não é sensível a maiúsculas/minúsculas. |
 | `stock` | Não (default: 1) | Quantidade disponível em stock. |
-| `destaque` | Não (default: false) | Se `true`, a peça aparece na secção "Em destaque" da página inicial. |
-| `imagens` | Sim | Lista com os nomes dos ficheiros de imagem (têm de estar em `produtos-novos/imagens/`). A ordem importa: a primeira é a foto principal. |
-| `variantes` | Não | Lista de opções do produto (tamanho/cor/material), se a peça tiver variantes. Cada variante pode ter `tamanho`, `cor`, `material`, `ajuste_preco` (quanto soma ou subtrai ao preço base, pode ser negativo) e `stock`. Se a peça não tiver opções, remove este campo por completo. |
+| `destaque` | Não (default: nao) | Escreve `sim` para a peça aparecer na secção "Em destaque" da página inicial. |
 
-**Importante:**
-- Não uses vírgulas como separador decimal — usa sempre ponto (`32.5`, não `32,5`).
-- Não deixes vírgulas a mais nem a menos entre os campos (é o erro mais comum em ficheiros JSON). Se tiveres dúvidas, compara sempre com o `produto-exemplo.json`.
-- Podes ter quantos ficheiros `.json` quiseres dentro de `produtos-novos/` — um por produto.
+**Dicas:**
+- Linhas que começam por `#` são ignoradas — podes usá-las para deixar notas para ti próprio (como no ficheiro de exemplo).
+- Não precisas de aspas nem de vírgulas no fim das linhas — é só `campo: valor`, uma linha por campo.
+- O nome da PASTA é o que identifica o produto de uma importação para a seguinte (para saber se deve atualizar ou criar). Podes mudar o `nome` no info.txt à vontade — mas evita mudar o nome da pasta de um produto depois de já o teres importado, ou o script vai achar que é um produto novo.
+
+### Se o produto tiver variantes (tamanhos, cores, etc.)
+
+Acrescenta uma linha `variante:` por cada opção, no fim do `info.txt`:
+
+```
+variante: Curto | 0 | 3
+variante: Longo | 4 | 2
+```
+
+Formato: `nome da opção | ajuste no preço | stock`. O "ajuste no preço" soma (ou, se for negativo, subtrai) ao preço base — por exemplo, `variante: Longo | 4 | 2` significa uma opção "Longo" que custa mais 4€ e tem 2 unidades em stock. Se a peça não tiver variantes, não incluas nenhuma linha `variante:`.
 
 ## Passo 3 — correr o script
 
@@ -82,18 +93,18 @@ npm run importar-produtos
 ```
 
 O script vai:
-1. Verificar que cada ficheiro está bem preenchido (e dizer-te exatamente o que falta ou está errado, se houver problemas).
+1. Verificar que cada pasta tem um `info.txt` bem preenchido e pelo menos uma imagem (e dizer-te exatamente o que falta, se houver problemas).
 2. Enviar as imagens para o Supabase Storage.
 3. Criar (ou atualizar, se já existir) o produto no Supabase.
 4. Criar (ou atualizar) o produto e o preço correspondentes na Stripe.
-5. No fim, mostrar um resumo: quantos produtos foram criados, quantos atualizados, e a lista de qualquer ficheiro com erro.
+5. No fim, mostrar um resumo: quantos produtos foram criados, quantos atualizados, e a lista de qualquer pasta com erro.
 
 No final verás algo como:
 
 ```
-✓ colar-bruma.json — Colar Bruma (criado)
-✓ brincos-lua.json — Brincos Lua (atualizado)
-✗ pulseira-nova.json — campo "preco" em falta ou inválido...
+✓ colar-conchas — Colar de Conchas (criado)
+✓ brincos-prata — Brincos de Prata (atualizado)
+✗ pulseira-nova — campo "preco" em falta ou inválido...
 
 ──────────────────────────────
 Resumo da importação
@@ -105,11 +116,11 @@ Com erro:    1
 
 ## Repetir / corrigir um produto
 
-Se corrigires um ficheiro `.json` (ou trocares uma imagem) e voltares a correr `npm run importar-produtos`, o script **atualiza** o produto existente em vez de criar um duplicado — identifica o produto pelo nome (transformado automaticamente num "slug" único). Podes correr o script quantas vezes quiseres.
+Se corrigires o `info.txt` (ou trocares uma foto) e voltares a correr `npm run importar-produtos`, o script **atualiza** o produto existente em vez de criar um duplicado — identifica o produto pelo nome da pasta. Podes correr o script quantas vezes quiseres.
 
 ## Onde ficam os ficheiros depois?
 
-Os ficheiros `.json` e as imagens dentro de `produtos-novos/` ficam só no teu computador — não são enviados para o repositório de código (git). Depois de importados, os dados reais dos produtos vivem no Supabase e as imagens no Supabase Storage. Podes apagar os `.json` e as imagens de `produtos-novos/` depois de confirmares que o produto ficou bem no site, ou deixá-los ficar (não têm efeito nenhum enquanto o script não voltar a correr).
+As pastas dentro de `produtos-novos/` (exceto `exemplo-produto/`) ficam só no teu computador — não são enviadas para o repositório de código (git). Depois de importados, os dados reais dos produtos vivem no Supabase e as fotos no Supabase Storage. Podes apagar as pastas de `produtos-novos/` depois de confirmares que o produto ficou bem no site, ou deixá-las ficar (não têm efeito nenhum enquanto o script não voltar a correr).
 
 ## Nota sobre a Stripe
 

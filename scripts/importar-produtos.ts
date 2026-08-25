@@ -1,20 +1,22 @@
 /**
- * Importa produtos a partir de ficheiros .json na pasta /produtos-novos
- * para o Supabase (tabela products/product_images/product_variants) e cria
- * o Product + Price correspondentes no Stripe.
+ * Importa produtos a partir de pastas dentro de /produtos-novos — uma pasta
+ * por produto, com as fotos e um ficheiro info.txt — para o Supabase
+ * (tabela products/product_images/product_variants) e cria o Product +
+ * Price correspondentes no Stripe.
  *
  * Uso: npm run importar-produtos
  * Documentação completa: ver COMO_ADICIONAR_PRODUTOS.md na raiz do projeto.
  */
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
-import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 
 const PRODUTOS_DIR = join(process.cwd(), "produtos-novos");
-const IMAGENS_DIR = join(PRODUTOS_DIR, "imagens");
-const FICHEIRO_EXEMPLO = "produto-exemplo.json";
+const PASTA_EXEMPLO = "exemplo-produto";
+const NOME_FICHEIRO_INFO = "info.txt";
 const STORAGE_BUCKET = "products";
+const EXTENSOES_IMAGEM = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
 
 const CATEGORIAS_VALIDAS = [
   "colares",
@@ -26,11 +28,9 @@ const CATEGORIAS_VALIDAS = [
 ] as const;
 
 type ProdutoVariante = {
-  tamanho?: string;
-  cor?: string;
-  material?: string;
-  ajuste_preco?: number;
-  stock?: number;
+  tamanho: string;
+  ajuste_preco: number;
+  stock: number;
 };
 
 type ProdutoInput = {
@@ -40,111 +40,134 @@ type ProdutoInput = {
   preco: number;
   peso_gramas: number;
   categoria: string;
-  slug?: string;
   stock?: number;
   destaque?: boolean;
-  imagens: string[];
-  variantes?: ProdutoVariante[];
+  variantes: ProdutoVariante[];
 };
 
 type ResultadoProduto =
-  | { ficheiro: string; ok: true; acao: "criado" | "atualizado"; nome: string }
-  | { ficheiro: string; ok: false; erros: string[] };
+  | { pasta: string; ok: true; acao: "criado" | "atualizado"; nome: string }
+  | { pasta: string; ok: false; erros: string[] };
 
-function slugify(texto: string): string {
+function normalizar(texto: string): string {
   return texto
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
-    .trim()
+    .trim();
+}
+
+function slugify(texto: string): string {
+  return normalizar(texto)
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
-function validarProduto(input: unknown, ficheiro: string): { produto: ProdutoInput | null; erros: string[] } {
+function paraNumero(valor: string): number | null {
+  const limpo = valor.trim().replace(",", ".");
+  const numero = Number(limpo);
+  return Number.isFinite(numero) ? numero : null;
+}
+
+/**
+ * Lê um info.txt no formato "campo: valor" (uma linha por campo).
+ * Linhas vazias ou que começam por "#" são ignoradas. O campo "variante"
+ * pode repetir-se em várias linhas, no formato:
+ *   variante: Curto | 0 | 3
+ *   (nome da opção | ajuste no preço | stock — os dois últimos são opcionais)
+ */
+function parseInfoTxt(conteudo: string): { campos: Map<string, string>; variantes: ProdutoVariante[] } {
+  const campos = new Map<string, string>();
+  const variantes: ProdutoVariante[] = [];
+
+  const linhas = conteudo.split(/\r?\n/);
+  for (const linhaOriginal of linhas) {
+    const linha = linhaOriginal.trim();
+    if (linha === "" || linha.startsWith("#")) continue;
+
+    const idx = linha.indexOf(":");
+    if (idx === -1) continue;
+
+    const chave = normalizar(linha.slice(0, idx));
+    const valor = linha.slice(idx + 1).trim();
+
+    if (chave === "variante") {
+      const partes = valor.split("|").map((p) => p.trim());
+      variantes.push({
+        tamanho: partes[0] ?? "",
+        ajuste_preco: partes[1] ? (paraNumero(partes[1]) ?? 0) : 0,
+        stock: partes[2] ? (paraNumero(partes[2]) ?? 0) : 0,
+      });
+      continue;
+    }
+
+    campos.set(chave, valor);
+  }
+
+  return { campos, variantes };
+}
+
+function validarProduto(
+  campos: Map<string, string>,
+  variantes: ProdutoVariante[],
+  pasta: string
+): { produto: ProdutoInput | null; erros: string[] } {
   const erros: string[] = [];
 
-  if (typeof input !== "object" || input === null) {
-    return { produto: null, erros: [`${ficheiro}: o conteúdo do ficheiro não é um objeto JSON válido.`] };
+  const nome = campos.get("nome")?.trim();
+  if (!nome) {
+    erros.push(`campo "nome" em falta no info.txt.`);
   }
-  const p = input as Record<string, unknown>;
 
-  if (typeof p.nome !== "string" || p.nome.trim() === "") {
-    erros.push(`campo "nome" em falta ou vazio.`);
+  const precoTexto = campos.get("preco");
+  const preco = precoTexto !== undefined ? paraNumero(precoTexto) : null;
+  if (!precoTexto || preco === null || preco <= 0) {
+    erros.push(`campo "preco" em falta ou inválido no info.txt — tem de ser um número maior que 0 (ex: 24.90).`);
   }
-  if (p.nome_en !== undefined && typeof p.nome_en !== "string") {
-    erros.push(`campo "nome_en" deve ser texto.`);
+
+  const pesoTexto = campos.get("peso");
+  const peso = pesoTexto !== undefined ? paraNumero(pesoTexto) : null;
+  if (!pesoTexto || peso === null || peso <= 0) {
+    erros.push(`campo "peso" em falta ou inválido no info.txt — tem de ser um número maior que 0, em gramas (ex: 35).`);
   }
-  if (p.descricao !== undefined && typeof p.descricao !== "string") {
-    erros.push(`campo "descricao" deve ser texto.`);
-  }
-  if (typeof p.preco !== "number" || !Number.isFinite(p.preco) || p.preco <= 0) {
-    erros.push(`campo "preco" em falta ou inválido — tem de ser um número maior que 0 (ex: 32.5).`);
-  }
-  if (typeof p.peso_gramas !== "number" || !Number.isFinite(p.peso_gramas) || p.peso_gramas <= 0) {
-    erros.push(`campo "peso_gramas" em falta ou inválido — tem de ser um número maior que 0 (ex: 120).`);
-  }
-  if (typeof p.categoria !== "string" || !CATEGORIAS_VALIDAS.includes(p.categoria as (typeof CATEGORIAS_VALIDAS)[number])) {
+
+  const categoriaTexto = campos.get("categoria");
+  const categoriaNormalizada = categoriaTexto ? normalizar(categoriaTexto) : "";
+  if (!categoriaTexto || !CATEGORIAS_VALIDAS.includes(categoriaNormalizada as (typeof CATEGORIAS_VALIDAS)[number])) {
     erros.push(
-      `campo "categoria" em falta ou inválido — tem de ser um destes: ${CATEGORIAS_VALIDAS.join(", ")}.`
+      `campo "categoria" em falta ou inválido no info.txt — tem de ser um destes: Colares, Brincos, Pulseiras, Anéis, Broches, Conjuntos.`
     );
   }
-  if (p.stock !== undefined && (typeof p.stock !== "number" || p.stock < 0)) {
-    erros.push(`campo "stock" deve ser um número maior ou igual a 0.`);
-  }
-  if (p.destaque !== undefined && typeof p.destaque !== "boolean") {
-    erros.push(`campo "destaque" deve ser true ou false.`);
-  }
-  if (!Array.isArray(p.imagens) || p.imagens.length === 0 || !p.imagens.every((i) => typeof i === "string")) {
-    erros.push(`campo "imagens" em falta ou inválido — tem de ser uma lista com pelo menos um nome de ficheiro (ex: ["colar-bruma-1.jpg"]).`);
-  } else {
-    for (const nomeImagem of p.imagens as string[]) {
-      const caminho = join(IMAGENS_DIR, nomeImagem);
-      if (!existsSync(caminho)) {
-        erros.push(`a imagem "${nomeImagem}" não foi encontrada em produtos-novos/imagens/.`);
-      }
-    }
-  }
-  if (p.variantes !== undefined) {
-    if (!Array.isArray(p.variantes)) {
-      erros.push(`campo "variantes" deve ser uma lista.`);
+
+  const stockTexto = campos.get("stock");
+  let stock: number | undefined;
+  if (stockTexto !== undefined) {
+    const n = paraNumero(stockTexto);
+    if (n === null || n < 0) {
+      erros.push(`campo "stock" no info.txt deve ser um número maior ou igual a 0.`);
     } else {
-      p.variantes.forEach((v, i) => {
-        if (typeof v !== "object" || v === null) {
-          erros.push(`variante #${i + 1} deve ser um objeto.`);
-          return;
-        }
-        const variante = v as Record<string, unknown>;
-        if (
-          variante.ajuste_preco !== undefined &&
-          (typeof variante.ajuste_preco !== "number" || !Number.isFinite(variante.ajuste_preco))
-        ) {
-          erros.push(`variante #${i + 1}: "ajuste_preco" deve ser um número (pode ser negativo).`);
-        }
-        if (variante.stock !== undefined && (typeof variante.stock !== "number" || variante.stock < 0)) {
-          erros.push(`variante #${i + 1}: "stock" deve ser um número maior ou igual a 0.`);
-        }
-      });
+      stock = n;
     }
   }
 
+  const destaqueTexto = campos.get("destaque");
+  const destaque = destaqueTexto !== undefined ? ["sim", "true", "1"].includes(normalizar(destaqueTexto)) : undefined;
+
   if (erros.length > 0) {
-    return { produto: null, erros: erros.map((e) => `${ficheiro}: ${e}`) };
+    return { produto: null, erros: erros.map((e) => `${pasta}: ${e}`) };
   }
 
   return {
     produto: {
-      nome: (p.nome as string).trim(),
-      nome_en: p.nome_en as string | undefined,
-      descricao: p.descricao as string | undefined,
-      preco: p.preco as number,
-      peso_gramas: p.peso_gramas as number,
-      categoria: p.categoria as string,
-      slug: typeof p.slug === "string" && p.slug.trim() !== "" ? slugify(p.slug) : undefined,
-      stock: p.stock as number | undefined,
-      destaque: p.destaque as boolean | undefined,
-      imagens: p.imagens as string[],
-      variantes: p.variantes as ProdutoVariante[] | undefined,
+      nome: nome!,
+      nome_en: campos.get("nome_en")?.trim() || undefined,
+      descricao: campos.get("descricao")?.trim() || undefined,
+      preco: preco!,
+      peso_gramas: peso!,
+      categoria: categoriaNormalizada,
+      stock,
+      destaque,
+      variantes,
     },
     erros: [],
   };
@@ -196,14 +219,21 @@ async function carregarCategorias(supabase: SupabaseClient): Promise<Map<string,
   return mapa;
 }
 
+function listarImagens(pastaProduto: string): string[] {
+  return readdirSync(pastaProduto)
+    .filter((f) => EXTENSOES_IMAGEM.includes(extname(f).toLowerCase()))
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
+}
+
 async function importarImagens(
   supabase: SupabaseClient,
+  pastaProduto: string,
   slug: string,
   nomesFicheiros: string[]
 ): Promise<{ url: string; nome: string }[]> {
   const resultado: { url: string; nome: string }[] = [];
   for (const nomeFicheiro of nomesFicheiros) {
-    const caminhoLocal = join(IMAGENS_DIR, nomeFicheiro);
+    const caminhoLocal = join(pastaProduto, nomeFicheiro);
     const conteudo = readFileSync(caminhoLocal);
     const caminhoStorage = `${slug}/${nomeFicheiro}`;
     const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(caminhoStorage, conteudo, {
@@ -274,10 +304,12 @@ async function importarProduto(
   supabase: SupabaseClient,
   stripe: Stripe,
   categorias: Map<string, string>,
-  ficheiro: string,
-  produto: ProdutoInput
+  pasta: string,
+  pastaProduto: string,
+  produto: ProdutoInput,
+  imagens: string[]
 ): Promise<ResultadoProduto> {
-  const slug = produto.slug ?? slugify(produto.nome);
+  const slug = slugify(pasta);
   const categoryId = categorias.get(produto.categoria) ?? null;
 
   const { data: existente, error: buscaError } = await supabase
@@ -285,13 +317,13 @@ async function importarProduto(
     .select("id, stripe_product_id, stripe_price_id")
     .eq("slug", slug)
     .maybeSingle();
-  if (buscaError) return { ficheiro, ok: false, erros: [`${ficheiro}: erro ao consultar produto existente — ${buscaError.message}`] };
+  if (buscaError) return { pasta, ok: false, erros: [`${pasta}: erro ao consultar produto existente — ${buscaError.message}`] };
 
-  const imagens = await importarImagens(supabase, slug, produto.imagens);
+  const imagensEnviadas = await importarImagens(supabase, pastaProduto, slug, imagens);
   const { stripeProductId, stripePriceId } = await sincronizarStripe(
     stripe,
     produto,
-    imagens.map((i) => i.url),
+    imagensEnviadas.map((i) => i.url),
     existente
   );
 
@@ -315,41 +347,41 @@ async function importarProduto(
   if (existente) {
     productId = existente.id;
     const { error } = await supabase.from("products").update(linhaProduto).eq("id", productId);
-    if (error) return { ficheiro, ok: false, erros: [`${ficheiro}: erro ao atualizar produto — ${error.message}`] };
+    if (error) return { pasta, ok: false, erros: [`${pasta}: erro ao atualizar produto — ${error.message}`] };
   } else {
     const { data, error } = await supabase.from("products").insert(linhaProduto).select("id").single();
-    if (error || !data) return { ficheiro, ok: false, erros: [`${ficheiro}: erro ao criar produto — ${error?.message}`] };
+    if (error || !data) return { pasta, ok: false, erros: [`${pasta}: erro ao criar produto — ${error?.message}`] };
     productId = data.id;
   }
 
   // Substitui imagens e variantes por completo a cada importação — mais
   // simples e previsível do que tentar comparar/atualizar item a item.
   await supabase.from("product_images").delete().eq("product_id", productId);
-  const linhasImagens = imagens.map((img, index) => ({
+  const linhasImagens = imagensEnviadas.map((img, index) => ({
     product_id: productId,
     url: img.url,
     order_index: index,
     is_primary: index === 0,
   }));
   const { error: imgError } = await supabase.from("product_images").insert(linhasImagens);
-  if (imgError) return { ficheiro, ok: false, erros: [`${ficheiro}: erro ao guardar imagens — ${imgError.message}`] };
+  if (imgError) return { pasta, ok: false, erros: [`${pasta}: erro ao guardar imagens — ${imgError.message}`] };
 
   await supabase.from("product_variants").delete().eq("product_id", productId);
-  if (produto.variantes && produto.variantes.length > 0) {
+  if (produto.variantes.length > 0) {
     const linhasVariantes = produto.variantes.map((v) => ({
       product_id: productId,
-      size: v.tamanho ?? null,
-      color: v.cor ?? null,
-      material: v.material ?? null,
-      price_modifier: v.ajuste_preco ?? 0,
-      stock_quantity: v.stock ?? 0,
+      size: v.tamanho || null,
+      color: null,
+      material: null,
+      price_modifier: v.ajuste_preco,
+      stock_quantity: v.stock,
       is_active: true,
     }));
     const { error: varError } = await supabase.from("product_variants").insert(linhasVariantes);
-    if (varError) return { ficheiro, ok: false, erros: [`${ficheiro}: erro ao guardar variantes — ${varError.message}`] };
+    if (varError) return { pasta, ok: false, erros: [`${pasta}: erro ao guardar variantes — ${varError.message}`] };
   }
 
-  return { ficheiro, ok: true, acao: existente ? "atualizado" : "criado", nome: produto.nome };
+  return { pasta, ok: true, acao: existente ? "atualizado" : "criado", nome: produto.nome };
 }
 
 async function main() {
@@ -382,53 +414,63 @@ async function main() {
   await garantirBucket(supabase);
   const categorias = await carregarCategorias(supabase);
 
-  const ficheiros = readdirSync(PRODUTOS_DIR).filter(
-    (f) => f.endsWith(".json") && f !== FICHEIRO_EXEMPLO
-  );
+  const pastas = readdirSync(PRODUTOS_DIR).filter((nome) => {
+    if (nome === PASTA_EXEMPLO) return false;
+    return statSync(join(PRODUTOS_DIR, nome)).isDirectory();
+  });
 
-  if (ficheiros.length === 0) {
+  if (pastas.length === 0) {
     console.log(
-      `Não há ficheiros .json para importar em produtos-novos/ (além do ${FICHEIRO_EXEMPLO}, que é só um exemplo).\n` +
-        "Copia o ficheiro de exemplo, preenche os dados de um produto real e corre o script outra vez."
+      `Não há pastas de produtos para importar dentro de produtos-novos/ (além de "${PASTA_EXEMPLO}", que é só um exemplo).\n` +
+        "Copia essa pasta, dá-lhe o nome do teu produto, substitui as fotos e preenche o info.txt, depois corre o script outra vez."
     );
     return;
   }
 
-  console.log(`A processar ${ficheiros.length} ficheiro(s)...\n`);
+  console.log(`A processar ${pastas.length} pasta(s)...\n`);
 
   const resultados: ResultadoProduto[] = [];
 
-  for (const ficheiro of ficheiros) {
-    const caminho = join(PRODUTOS_DIR, ficheiro);
-    let conteudoJson: unknown;
-    try {
-      conteudoJson = JSON.parse(readFileSync(caminho, "utf-8"));
-    } catch (e) {
+  for (const pasta of pastas) {
+    const pastaProduto = join(PRODUTOS_DIR, pasta);
+    const caminhoInfo = join(pastaProduto, NOME_FICHEIRO_INFO);
+
+    if (!existsSync(caminhoInfo)) {
+      resultados.push({ pasta, ok: false, erros: [`${pasta}: não tem um ficheiro "${NOME_FICHEIRO_INFO}" dentro da pasta.`] });
+      console.log(`✗ ${pasta} — falta o ficheiro ${NOME_FICHEIRO_INFO}`);
+      continue;
+    }
+
+    const imagens = listarImagens(pastaProduto);
+    if (imagens.length === 0) {
       resultados.push({
-        ficheiro,
+        pasta,
         ok: false,
-        erros: [`${ficheiro}: o ficheiro não é um JSON válido (falta uma vírgula, aspas, ou chaveta?) — ${(e as Error).message}`],
+        erros: [`${pasta}: não tem nenhuma imagem (.jpg, .jpeg, .png, .webp ou .gif) dentro da pasta.`],
       });
+      console.log(`✗ ${pasta} — sem imagens na pasta`);
       continue;
     }
 
-    const { produto, erros } = validarProduto(conteudoJson, ficheiro);
+    const { campos, variantes } = parseInfoTxt(readFileSync(caminhoInfo, "utf-8"));
+    const { produto, erros } = validarProduto(campos, variantes, pasta);
     if (!produto) {
-      resultados.push({ ficheiro, ok: false, erros });
+      resultados.push({ pasta, ok: false, erros });
+      console.log(`✗ ${pasta} — ${erros.join(" | ")}`);
       continue;
     }
 
     try {
-      const resultado = await importarProduto(supabase, stripe, categorias, ficheiro, produto);
+      const resultado = await importarProduto(supabase, stripe, categorias, pasta, pastaProduto, produto, imagens);
       resultados.push(resultado);
       if (resultado.ok) {
-        console.log(`✓ ${ficheiro} — ${resultado.nome} (${resultado.acao})`);
+        console.log(`✓ ${pasta} — ${resultado.nome} (${resultado.acao})`);
       } else {
-        console.log(`✗ ${ficheiro} — ${resultado.erros.join(" | ")}`);
+        console.log(`✗ ${pasta} — ${resultado.erros.join(" | ")}`);
       }
     } catch (e) {
-      resultados.push({ ficheiro, ok: false, erros: [`${ficheiro}: ${(e as Error).message}`] });
-      console.log(`✗ ${ficheiro} — ${(e as Error).message}`);
+      resultados.push({ pasta, ok: false, erros: [`${pasta}: ${(e as Error).message}`] });
+      console.log(`✗ ${pasta} — ${(e as Error).message}`);
     }
   }
 
@@ -443,7 +485,7 @@ async function main() {
   console.log(`Atualizados: ${atualizados}`);
   console.log(`Com erro:    ${comErro.length}`);
   if (comErro.length > 0) {
-    console.log("\nFicheiros com problemas:");
+    console.log("\nPastas com problemas:");
     for (const r of comErro) {
       if (!r.ok) for (const e of r.erros) console.log(`  - ${e}`);
     }

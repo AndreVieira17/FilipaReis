@@ -1,0 +1,10 @@
+É AQUI, dentro desta mesma pasta, que colocas as fotos deste produto.
+
+Podes pôr quantas quiseres (foto1.jpg, foto2.jpg, foto3.jpg, ...) — o
+script associa automaticamente todas as imagens que encontrar na pasta.
+A primeira, por ordem alfabética, é usada como foto principal na loja.
+
+Este ficheiro é só uma nota de exemplo — não é uma imagem, por isso o
+script ignora esta pasta (chama-se "exemplo-produto"). Quando criares a
+pasta de um produto real, apaga este ficheiro e substitui pelas fotos
+verdadeiras.

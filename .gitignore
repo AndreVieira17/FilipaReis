@@ -38,10 +38,8 @@ next-env.d.ts
 .vercel
 .env*
 
-# produtos a importar (dados/imagens locais — não fazem parte do repositório;
-# depois de importados ficam guardados no Supabase, não em git)
+# produtos a importar (pastas com fotos + info.txt, uma por produto —
+# dados locais que não fazem parte do repositório; depois de importados
+# ficam guardados no Supabase, não em git)
 /produtos-novos/*
-!/produtos-novos/produto-exemplo.json
-!/produtos-novos/imagens/
-/produtos-novos/imagens/*
-!/produtos-novos/imagens/.gitkeep
+!/produtos-novos/exemplo-produto/
