@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
@@ -25,6 +26,7 @@ import { useSupabaseUser } from "@/lib/hooks/useSupabaseUser";
 const REGIONS: ShippingRegion[] = ["continental", "acores", "madeira", "ue"];
 
 export function CarrinhoClient() {
+  const router = useRouter();
   const items = useCartStore((s) => s.items);
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
@@ -44,6 +46,7 @@ export function CarrinhoClient() {
     PRODUCT_UNAVAILABLE: "errorProductUnavailable",
     VARIANT_UNAVAILABLE: "errorVariantUnavailable",
     SHIPPING_UNAVAILABLE: "errorShippingUnavailable",
+    LOGIN_REQUIRED: "errorLoginRequired",
   };
 
   const weightGrams = useMemo(
@@ -57,6 +60,10 @@ export function CarrinhoClient() {
   const total = subtotal + (shippingCost ?? 0);
 
   async function handleCheckout() {
+    if (!user) {
+      router.push("/conta/entrar?redirect=/carrinho");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -239,7 +246,7 @@ export function CarrinhoClient() {
             variant="primary"
             className="mt-6 w-full"
             onClick={handleCheckout}
-            disabled={loading || shippingCost === null}
+            disabled={loading || authLoading || shippingCost === null}
           >
             {loading ? t("checkoutLoading") : t("checkout")}
           </Button>
