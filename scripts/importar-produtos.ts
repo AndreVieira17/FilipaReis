@@ -17,6 +17,9 @@ const PASTA_EXEMPLO = "exemplo-produto";
 const NOME_FICHEIRO_INFO = "info.txt";
 const STORAGE_BUCKET = "products";
 const EXTENSOES_IMAGEM = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
+// Por defeito o stock é "ilimitado" — não há necessidade de indicar
+// quantidade a não ser que queiras mesmo limitar uma peça específica.
+const STOCK_ILIMITADO = 99999;
 
 const CATEGORIAS_VALIDAS = [
   "colares",
@@ -96,7 +99,7 @@ function parseInfoTxt(conteudo: string): { campos: Map<string, string>; variante
       variantes.push({
         tamanho: partes[0] ?? "",
         ajuste_preco: partes[1] ? (paraNumero(partes[1]) ?? 0) : 0,
-        stock: partes[2] ? (paraNumero(partes[2]) ?? 0) : 0,
+        stock: partes[2] ? (paraNumero(partes[2]) ?? STOCK_ILIMITADO) : STOCK_ILIMITADO,
       });
       continue;
     }
@@ -337,7 +340,7 @@ async function importarProduto(
     price: produto.preco,
     is_active: true,
     is_featured: produto.destaque ?? false,
-    stock_quantity: produto.stock ?? 1,
+    stock_quantity: produto.stock ?? STOCK_ILIMITADO,
     weight_grams: produto.peso_gramas,
     stripe_product_id: stripeProductId,
     stripe_price_id: stripePriceId,

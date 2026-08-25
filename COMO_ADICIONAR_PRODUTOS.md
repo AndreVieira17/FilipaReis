@@ -51,7 +51,6 @@ descricao: Colar artesanal feito à mão com conchas naturais apanhadas na costa
 preco: 24.90
 peso: 35
 categoria: Colares
-stock: 5
 destaque: nao
 ```
 
@@ -65,7 +64,7 @@ destaque: nao
 | `preco` | Sim | Preço em euros. Podes escrever com ponto ou vírgula (`24.90` ou `24,90`). |
 | `peso` | Sim | Peso da peça já embalada, em gramas — usado para calcular os portes de envio. |
 | `categoria` | Sim | Uma destas: `Colares`, `Brincos`, `Pulseiras`, `Anéis`, `Broches`, `Conjuntos`. Não é sensível a maiúsculas/minúsculas. |
-| `stock` | Não (default: 1) | Quantidade disponível em stock. |
+| `stock` | Não (default: ilimitado) | Quantidade disponível em stock. Só precisas de preencher se quiseres mesmo limitar uma peça específica — se não preencheres, o stock fica ilimitado (a peça nunca aparece como esgotada). |
 | `destaque` | Não (default: nao) | Escreve `sim` para a peça aparecer na secção "Em destaque" da página inicial. |
 
 **Dicas:**
@@ -78,11 +77,11 @@ destaque: nao
 Acrescenta uma linha `variante:` por cada opção, no fim do `info.txt`:
 
 ```
-variante: Curto | 0 | 3
-variante: Longo | 4 | 2
+variante: Curto | 0
+variante: Longo | 4
 ```
 
-Formato: `nome da opção | ajuste no preço | stock`. O "ajuste no preço" soma (ou, se for negativo, subtrai) ao preço base — por exemplo, `variante: Longo | 4 | 2` significa uma opção "Longo" que custa mais 4€ e tem 2 unidades em stock. Se a peça não tiver variantes, não incluas nenhuma linha `variante:`.
+Formato: `nome da opção | ajuste no preço | stock (opcional)`. O "ajuste no preço" soma (ou, se for negativo, subtrai) ao preço base — por exemplo, `variante: Longo | 4` significa uma opção "Longo" que custa mais 4€. Tal como o produto, cada variante fica com stock ilimitado a não ser que indiques um número no fim (`variante: Longo | 4 | 2`, com 2 unidades). Se a peça não tiver variantes, não incluas nenhuma linha `variante:`.
 
 ## Passo 3 — correr o script
 

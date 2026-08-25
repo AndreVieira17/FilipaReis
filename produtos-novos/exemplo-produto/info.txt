@@ -4,17 +4,15 @@ descricao: Colar artesanal feito à mão com conchas naturais apanhadas na costa
 preco: 24.90
 peso: 35
 categoria: Colares
-stock: 5
-destaque: nao
 
 # Campos opcionais — podes apagar as linhas que não precisares:
 # nome_en    -> nome em inglês (se não preencheres, usa o "nome")
-# stock      -> quantidade disponível (se não preencheres, assume 1)
+# stock      -> quantidade disponível (se não preencheres, o stock fica ilimitado)
 # destaque   -> "sim" para aparecer em "Em destaque" na página inicial (default: nao)
 #
 # Se o produto tiver variantes (tamanhos, por exemplo), acrescenta uma linha
 # "variante:" por cada opção, neste formato:
-#   variante: nome da opção | ajuste no preço | stock
+#   variante: nome da opção | ajuste no preço | stock (opcional, default ilimitado)
 #
-# variante: Curto | 0 | 3
-# variante: Longo | 4 | 2
+# variante: Curto | 0
+# variante: Longo | 4
