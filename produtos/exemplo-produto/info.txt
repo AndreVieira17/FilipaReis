@@ -1,0 +1,17 @@
+nome: Colar de Conchas
+descricao: Colar artesanal feito à mão com conchas naturais apanhadas na costa portuguesa.
+preco: 24.90
+peso: 35
+medida: 40 cm
+
+# ---------------------------------------------------------------
+# Campos extra (opcionais) — só precisas destes se quiseres:
+#
+# nome_en: Shell Necklace           -> nome em inglês (se não puseres, usa o "nome")
+# categoria: Colares                -> Colares, Brincos, Pulseiras, Anéis, Broches ou Conjuntos
+# stock: 5                          -> se não puseres, o stock fica ilimitado
+# destaque: sim                     -> aparece em "Em destaque" na página inicial
+#
+# variante: Curto | 0               -> nome da opção | ajuste no preço (podes repetir esta linha)
+# variante: Longo | 4
+# ---------------------------------------------------------------

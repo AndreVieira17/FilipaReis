@@ -1,8 +1,9 @@
 /**
- * Importa produtos a partir de pastas dentro de /produtos-novos — uma pasta
- * por produto, com as fotos e um ficheiro info.txt — para o Supabase
- * (tabela products/product_images/product_variants) e cria o Product +
- * Price correspondentes no Stripe.
+ * Importa produtos a partir de pastas dentro de /produtos — uma pasta por
+ * produto, com um ficheiro info.txt e as fotos (diretamente na pasta ou
+ * dentro de uma subpasta, ex: "fotos/") — para o Supabase (tabela
+ * products/product_images/product_variants) e cria o Product + Price
+ * correspondentes no Stripe.
  *
  * Uso: npm run importar-produtos
  * Documentação completa: ver COMO_ADICIONAR_PRODUTOS.md na raiz do projeto.
@@ -12,7 +13,7 @@ import Stripe from "stripe";
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 
-const PRODUTOS_DIR = join(process.cwd(), "produtos-novos");
+const PRODUTOS_DIR = join(process.cwd(), "produtos");
 const PASTA_EXEMPLO = "exemplo-produto";
 const NOME_FICHEIRO_INFO = "info.txt";
 const STORAGE_BUCKET = "products";
@@ -40,6 +41,7 @@ type ProdutoInput = {
   nome: string;
   nome_en?: string;
   descricao?: string;
+  medida?: string;
   preco: number;
   peso_gramas: number;
   categoria: string;
@@ -64,6 +66,13 @@ function slugify(texto: string): string {
   return normalizar(texto)
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function montarDescricao(produto: ProdutoInput): string | undefined {
+  const partes = [produto.descricao, produto.medida ? `Medida: ${produto.medida}` : null].filter(
+    (p): p is string => !!p
+  );
+  return partes.length > 0 ? partes.join("\n\n") : undefined;
 }
 
 function paraNumero(valor: string): number | null {
@@ -134,12 +143,17 @@ function validarProduto(
     erros.push(`campo "peso" em falta ou inválido no info.txt — tem de ser um número maior que 0, em gramas (ex: 35).`);
   }
 
-  const categoriaTexto = campos.get("categoria");
-  const categoriaNormalizada = categoriaTexto ? normalizar(categoriaTexto) : "";
-  if (!categoriaTexto || !CATEGORIAS_VALIDAS.includes(categoriaNormalizada as (typeof CATEGORIAS_VALIDAS)[number])) {
-    erros.push(
-      `campo "categoria" em falta ou inválido no info.txt — tem de ser um destes: Colares, Brincos, Pulseiras, Anéis, Broches, Conjuntos.`
-    );
+  // A categoria é opcional — se não a preencheres, o produto fica sem
+  // categoria (continua a aparecer na loja, só não entra nos filtros).
+  const categoriaTexto = campos.get("categoria")?.trim();
+  let categoriaNormalizada = "";
+  if (categoriaTexto) {
+    categoriaNormalizada = normalizar(categoriaTexto);
+    if (!CATEGORIAS_VALIDAS.includes(categoriaNormalizada as (typeof CATEGORIAS_VALIDAS)[number])) {
+      erros.push(
+        `campo "categoria" inválido no info.txt ("${categoriaTexto}") — tem de ser um destes: Colares, Brincos, Pulseiras, Anéis, Broches, Conjuntos (ou apaga a linha, se não quiseres categorizar).`
+      );
+    }
   }
 
   const stockTexto = campos.get("stock");
@@ -165,6 +179,7 @@ function validarProduto(
       nome: nome!,
       nome_en: campos.get("nome_en")?.trim() || undefined,
       descricao: campos.get("descricao")?.trim() || undefined,
+      medida: campos.get("medida")?.trim() || undefined,
       preco: preco!,
       peso_gramas: peso!,
       categoria: categoriaNormalizada,
@@ -222,22 +237,39 @@ async function carregarCategorias(supabase: SupabaseClient): Promise<Map<string,
   return mapa;
 }
 
-function listarImagens(pastaProduto: string): string[] {
-  return readdirSync(pastaProduto)
-    .filter((f) => EXTENSOES_IMAGEM.includes(extname(f).toLowerCase()))
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
+type ImagemLocal = { nome: string; caminhoCompleto: string };
+
+/**
+ * Procura imagens diretamente dentro da pasta do produto E dentro de
+ * qualquer subpasta (ex: "fotos/") — para funcionar quer coloques as fotos
+ * soltas na pasta do produto, quer dentro de uma subpasta própria.
+ */
+function listarImagens(pastaProduto: string): ImagemLocal[] {
+  const resultado: ImagemLocal[] = [];
+
+  function percorrer(pasta: string) {
+    for (const entrada of readdirSync(pasta, { withFileTypes: true })) {
+      const caminho = join(pasta, entrada.name);
+      if (entrada.isDirectory()) {
+        percorrer(caminho);
+      } else if (EXTENSOES_IMAGEM.includes(extname(entrada.name).toLowerCase())) {
+        resultado.push({ nome: entrada.name, caminhoCompleto: caminho });
+      }
+    }
+  }
+  percorrer(pastaProduto);
+
+  return resultado.sort((a, b) => a.nome.localeCompare(b.nome, undefined, { numeric: true, sensitivity: "base" }));
 }
 
 async function importarImagens(
   supabase: SupabaseClient,
-  pastaProduto: string,
   slug: string,
-  nomesFicheiros: string[]
+  imagensLocais: ImagemLocal[]
 ): Promise<{ url: string; nome: string }[]> {
   const resultado: { url: string; nome: string }[] = [];
-  for (const nomeFicheiro of nomesFicheiros) {
-    const caminhoLocal = join(pastaProduto, nomeFicheiro);
-    const conteudo = readFileSync(caminhoLocal);
+  for (const { nome: nomeFicheiro, caminhoCompleto } of imagensLocais) {
+    const conteudo = readFileSync(caminhoCompleto);
     const caminhoStorage = `${slug}/${nomeFicheiro}`;
     const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(caminhoStorage, conteudo, {
       contentType: contentTypeFromExt(nomeFicheiro),
@@ -253,6 +285,7 @@ async function importarImagens(
 async function sincronizarStripe(
   stripe: Stripe,
   produto: ProdutoInput,
+  descricao: string | undefined,
   imagensUrls: string[],
   existente: { stripe_product_id: string | null; stripe_price_id: string | null } | null
 ): Promise<{ stripeProductId: string; stripePriceId: string }> {
@@ -262,14 +295,14 @@ async function sincronizarStripe(
   if (stripeProductId) {
     await stripe.products.update(stripeProductId, {
       name: produto.nome,
-      description: produto.descricao,
+      description: descricao,
       images: imagensUrls.slice(0, 8),
       active: true,
     });
   } else {
     const criado = await stripe.products.create({
       name: produto.nome,
-      description: produto.descricao,
+      description: descricao,
       images: imagensUrls.slice(0, 8),
     });
     stripeProductId = criado.id;
@@ -308,9 +341,8 @@ async function importarProduto(
   stripe: Stripe,
   categorias: Map<string, string>,
   pasta: string,
-  pastaProduto: string,
   produto: ProdutoInput,
-  imagens: string[]
+  imagens: ImagemLocal[]
 ): Promise<ResultadoProduto> {
   const slug = slugify(pasta);
   const categoryId = categorias.get(produto.categoria) ?? null;
@@ -322,10 +354,12 @@ async function importarProduto(
     .maybeSingle();
   if (buscaError) return { pasta, ok: false, erros: [`${pasta}: erro ao consultar produto existente — ${buscaError.message}`] };
 
-  const imagensEnviadas = await importarImagens(supabase, pastaProduto, slug, imagens);
+  const descricao = montarDescricao(produto);
+  const imagensEnviadas = await importarImagens(supabase, slug, imagens);
   const { stripeProductId, stripePriceId } = await sincronizarStripe(
     stripe,
     produto,
+    descricao,
     imagensEnviadas.map((i) => i.url),
     existente
   );
@@ -335,7 +369,7 @@ async function importarProduto(
     name_pt: produto.nome,
     name_en: produto.nome_en?.trim() || produto.nome,
     slug,
-    description_pt: produto.descricao ?? null,
+    description_pt: descricao ?? null,
     description_en: null,
     price: produto.preco,
     is_active: true,
@@ -409,7 +443,7 @@ async function main() {
   const stripe = new Stripe(stripeSecretKey);
 
   if (!existsSync(PRODUTOS_DIR)) {
-    console.error(`ERRO: a pasta "produtos-novos" não existe em ${PRODUTOS_DIR}.`);
+    console.error(`ERRO: a pasta "produtos" não existe em ${PRODUTOS_DIR}.`);
     process.exit(1);
   }
 
@@ -424,7 +458,7 @@ async function main() {
 
   if (pastas.length === 0) {
     console.log(
-      `Não há pastas de produtos para importar dentro de produtos-novos/ (além de "${PASTA_EXEMPLO}", que é só um exemplo).\n` +
+      `Não há pastas de produtos para importar dentro de produtos/ (além de "${PASTA_EXEMPLO}", que é só um exemplo).\n` +
         "Copia essa pasta, dá-lhe o nome do teu produto, substitui as fotos e preenche o info.txt, depois corre o script outra vez."
     );
     return;
@@ -464,7 +498,7 @@ async function main() {
     }
 
     try {
-      const resultado = await importarProduto(supabase, stripe, categorias, pasta, pastaProduto, produto, imagens);
+      const resultado = await importarProduto(supabase, stripe, categorias, pasta, produto, imagens);
       resultados.push(resultado);
       if (resultado.ok) {
         console.log(`✓ ${pasta} — ${resultado.nome} (${resultado.acao})`);

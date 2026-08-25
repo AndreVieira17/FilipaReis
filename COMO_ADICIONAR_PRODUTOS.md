@@ -18,72 +18,79 @@ Se ainda não correste este passo antes, a tabela de produtos no Supabase precis
 
 Não precisas de repetir isto — é um passo único. Se te esqueceres, o script deteta isso sozinho e mostra-te esta mesma instrução antes de fazer seja o que for.
 
-## Passo 1 — uma pasta por produto
+## Passo 1 — a pasta `produtos/`
 
-Dentro da pasta `produtos-novos/`, cria uma pasta para cada peça — o nome da pasta pode ser o que quiseres (ex: `colar-conchas`, `brincos-prata`). Usa a pasta `produtos-novos/exemplo-produto/` como modelo: copia-a, dá-lhe um nome novo, e substitui o conteúdo.
-
-Dentro da pasta de cada produto colocas duas coisas:
-
-1. **As fotos** — quantas quiseres, com o nome que quiseres (ex: `foto1.jpg`, `foto2.jpg`). O script associa automaticamente todas as imagens que encontrar dentro dessa pasta. A primeira, por ordem alfabética/numérica, é usada como foto principal na loja — por isso, se quiseres controlar qual aparece primeiro, numera-as (`foto1.jpg`, `foto2.jpg`, ...).
-2. **Um ficheiro `info.txt`** — com os dados do produto, um por linha, no formato `campo: valor`. Podes escrever e guardar este ficheiro no Bloco de Notas normalmente.
-
-Fica assim, por exemplo:
+Já existem 40 pastas em branco dentro de `produtos/` (`produto-01` a `produto-40`), prontas a preencher. Cada uma tem:
 
 ```
-produtos-novos/
-  colar-conchas/
-    foto1.jpg
-    foto2.jpg
+produtos/
+  produto-01/
+    info.txt      <- os dados do produto
+    fotos/        <- pasta vazia, para colocares as fotos
+  produto-02/
     info.txt
-  brincos-prata/
-    foto1.jpg
+    fotos/
+  ...
+  produto-40/
     info.txt
+    fotos/
+  exemplo-produto/   <- um exemplo já preenchido, para consultares
 ```
+
+Não precisas de criar pastas — só de preencher o que já lá está. Se um dia precisares de mais do que 40, cria uma pasta nova com o nome que quiseres (ex: `produto-41`) e faz igual.
+
+**O nome da pasta** (ex: `produto-01`) é o que identifica o produto de uma importação para a seguinte — não precisas de mudar o nome da pasta, mesmo que troques o `nome` no `info.txt`. Só evita mudar o nome de uma pasta depois de já teres importado esse produto, ou o script vai achar que é um produto novo.
 
 ## Passo 2 — preencher o info.txt
 
-Abre o `info.txt` no Bloco de Notas e preenche um campo por linha:
+Abre o `info.txt` de uma das pastas no Bloco de Notas. Já tem os campos prontos, só falta escreveres o valor a seguir a cada `:`:
+
+```
+nome: 
+descricao: 
+preco: 
+peso: 
+medida: 
+```
+
+Fica, por exemplo, assim:
 
 ```
 nome: Colar de Conchas
-nome_en: Shell Necklace
 descricao: Colar artesanal feito à mão com conchas naturais apanhadas na costa portuguesa.
 preco: 24.90
 peso: 35
-categoria: Colares
-destaque: nao
+medida: 40 cm
 ```
 
 ### O que cada campo significa
 
 | Campo | Obrigatório? | O que é |
 |---|---|---|
-| `nome` | Sim | Nome do produto em português, como aparece no site. |
-| `nome_en` | Não | Nome em inglês (guardado para o futuro — o site ainda mostra sempre o nome em português). Se não preencheres, usa o `nome`. |
+| `nome` | Sim | Nome do produto, como aparece no site. |
 | `descricao` | Não | Texto descritivo da peça, mostrado na página do produto (uma linha só). |
 | `preco` | Sim | Preço em euros. Podes escrever com ponto ou vírgula (`24.90` ou `24,90`). |
 | `peso` | Sim | Peso da peça já embalada, em gramas — usado para calcular os portes de envio. |
-| `categoria` | Sim | Uma destas: `Colares`, `Brincos`, `Pulseiras`, `Anéis`, `Broches`, `Conjuntos`. Não é sensível a maiúsculas/minúsculas. |
-| `stock` | Não (default: ilimitado) | Quantidade disponível em stock. Só precisas de preencher se quiseres mesmo limitar uma peça específica — se não preencheres, o stock fica ilimitado (a peça nunca aparece como esgotada). |
-| `destaque` | Não (default: nao) | Escreve `sim` para a peça aparecer na secção "Em destaque" da página inicial. |
+| `medida` | Não | Medida da peça (comprimento, tamanho, etc.) — aparece na descrição do produto, junto ao texto da `descricao`. |
 
 **Dicas:**
-- Linhas que começam por `#` são ignoradas — podes usá-las para deixar notas para ti próprio (como no ficheiro de exemplo).
 - Não precisas de aspas nem de vírgulas no fim das linhas — é só `campo: valor`, uma linha por campo.
-- O nome da PASTA é o que identifica o produto de uma importação para a seguinte (para saber se deve atualizar ou criar). Podes mudar o `nome` no info.txt à vontade — mas evita mudar o nome da pasta de um produto depois de já o teres importado, ou o script vai achar que é um produto novo.
+- Se deixares um campo não-obrigatório em branco (ex: `descricao: `), o script trata como se a linha não existisse.
 
-### Se o produto tiver variantes (tamanhos, cores, etc.)
+### Campos extra (só se quiseres)
 
-Acrescenta uma linha `variante:` por cada opção, no fim do `info.txt`:
+O `produtos/exemplo-produto/info.txt` mostra (comentados, com `#` à frente) alguns campos opcionais mais avançados, caso alguma vez precises:
+- `nome_en` — nome em inglês.
+- `categoria` — `Colares`, `Brincos`, `Pulseiras`, `Anéis`, `Broches` ou `Conjuntos`. Sem isto, o produto aparece na loja na mesma, só não entra nos filtros por categoria.
+- `stock` — se não preencheres, o stock fica ilimitado (a peça nunca aparece esgotada).
+- `destaque: sim` — para aparecer em "Em destaque" na página inicial.
+- `variante: nome da opção | ajuste no preço` (podes repetir esta linha) — para tamanhos/opções diferentes, ex: `variante: Longo | 4`.
 
-```
-variante: Curto | 0
-variante: Longo | 4
-```
+## Passo 3 — colocar as fotos
 
-Formato: `nome da opção | ajuste no preço | stock (opcional)`. O "ajuste no preço" soma (ou, se for negativo, subtrai) ao preço base — por exemplo, `variante: Longo | 4` significa uma opção "Longo" que custa mais 4€. Tal como o produto, cada variante fica com stock ilimitado a não ser que indiques um número no fim (`variante: Longo | 4 | 2`, com 2 unidades). Se a peça não tiver variantes, não incluas nenhuma linha `variante:`.
+Dentro da pasta `fotos/` de cada produto, coloca as fotos dessa peça — quantas quiseres, com o nome que quiseres. O script associa automaticamente todas as imagens que encontrar aí dentro. A primeira, por ordem alfabética/numérica, é usada como foto principal — numera-as (`foto1.jpg`, `foto2.jpg`, ...) se quiseres controlar a ordem.
 
-## Passo 3 — correr o script
+## Passo 4 — correr o script
 
 No terminal, dentro da pasta do projeto:
 
@@ -92,8 +99,8 @@ npm run importar-produtos
 ```
 
 O script vai:
-1. Verificar que cada pasta tem um `info.txt` bem preenchido e pelo menos uma imagem (e dizer-te exatamente o que falta, se houver problemas).
-2. Enviar as imagens para o Supabase Storage.
+1. Verificar que cada pasta tem um `info.txt` bem preenchido e pelo menos uma foto (e dizer-te exatamente o que falta, se houver problemas) — uma pasta com problemas é ignorada, sem impedir as outras de serem importadas.
+2. Enviar as fotos para o Supabase Storage.
 3. Criar (ou atualizar, se já existir) o produto no Supabase.
 4. Criar (ou atualizar) o produto e o preço correspondentes na Stripe.
 5. No fim, mostrar um resumo: quantos produtos foram criados, quantos atualizados, e a lista de qualquer pasta com erro.
@@ -101,15 +108,15 @@ O script vai:
 No final verás algo como:
 
 ```
-✓ colar-conchas — Colar de Conchas (criado)
-✓ brincos-prata — Brincos de Prata (atualizado)
-✗ pulseira-nova — campo "preco" em falta ou inválido...
+✓ produto-01 — Colar de Conchas (criado)
+✓ produto-02 — Brincos de Prata (criado)
+✗ produto-03 — campo "preco" em falta ou inválido...
 
 ──────────────────────────────
 Resumo da importação
 ──────────────────────────────
-Criados:     1
-Atualizados: 1
+Criados:     2
+Atualizados: 0
 Com erro:    1
 ```
 
@@ -119,7 +126,7 @@ Se corrigires o `info.txt` (ou trocares uma foto) e voltares a correr `npm run i
 
 ## Onde ficam os ficheiros depois?
 
-As pastas dentro de `produtos-novos/` (exceto `exemplo-produto/`) ficam só no teu computador — não são enviadas para o repositório de código (git). Depois de importados, os dados reais dos produtos vivem no Supabase e as fotos no Supabase Storage. Podes apagar as pastas de `produtos-novos/` depois de confirmares que o produto ficou bem no site, ou deixá-las ficar (não têm efeito nenhum enquanto o script não voltar a correr).
+As pastas dentro de `produtos/` (exceto `exemplo-produto/`) ficam só no teu computador — não são enviadas para o repositório de código (git). Depois de importados, os dados reais dos produtos vivem no Supabase e as fotos no Supabase Storage. Podes apagar as pastas de `produtos/` depois de confirmares que o produto ficou bem no site, ou deixá-las ficar (não têm efeito nenhum enquanto o script não voltar a correr).
 
 ## Nota sobre a Stripe
 
