@@ -90,15 +90,21 @@ O `produtos/exemplo-produto/info.txt` mostra (comentados, com `#` à frente) alg
 
 Dentro da pasta `fotos/` de cada produto, coloca as fotos dessa peça — quantas quiseres, com o nome que quiseres. O script associa automaticamente todas as imagens que encontrar aí dentro. A primeira, por ordem alfabética/numérica, é usada como foto principal — numera-as (`foto1.jpg`, `foto2.jpg`, ...) se quiseres controlar a ordem.
 
-## Passo 4 — correr o script
+## Passo 4 — importação automática (não precisas de fazer nada)
 
-No terminal, dentro da pasta do projeto:
+Há uma tarefa agendada no Windows ("FilipaReis - Importar Produtos") que corre o script sozinha **a cada 30 minutos**, mesmo depois de reiniciares o computador. Preenches o `info.txt` e colocas as fotos, e dentro de meia hora, no máximo, o produto aparece no site — não precisas de correr nada nem de me avisar aqui.
+
+O resultado de cada execução automática fica registado em `produtos/importacao-automatica.log` (dá para abrir no Bloco de Notas) — cada bloco começa com a data/hora e mostra o mesmo resumo que aparece no terminal.
+
+**Se quiseres correr manualmente na hora**, sem esperar pelos 30 minutos, no terminal dentro da pasta do projeto:
 
 ```bash
 npm run importar-produtos
 ```
 
-O script vai:
+**Para desligar a importação automática**, abre o "Agendador de Tarefas" do Windows (Task Scheduler), procura por "FilipaReis - Importar Produtos" e desativa ou apaga a tarefa.
+
+O script (automático ou manual) vai:
 1. Verificar que cada pasta tem um `info.txt` bem preenchido e pelo menos uma foto (e dizer-te exatamente o que falta, se houver problemas) — uma pasta com problemas é ignorada, sem impedir as outras de serem importadas.
 2. Enviar as fotos para o Supabase Storage.
 3. Criar (ou atualizar, se já existir) o produto no Supabase.
