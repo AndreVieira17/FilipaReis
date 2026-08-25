@@ -1,18 +1,25 @@
 /**
  * Cálculo de portes de envio — baseado no Tarifário CTT 2026
- * (https://www.ctt.pt/application/themes/pdfs/tarifario_2026_MSV4_16_01.pdf)
+ * (https://www.ctt.pt/application/themes/pdfs/tarifario_2026_MSV4_16_01.pdf,
+ * em vigor desde 3 de fevereiro de 2026), lido diretamente do PDF oficial.
  *
- * IMPORTANTE — valores a confirmar:
- * - Portugal Continental usa "Encomenda Postal Nacional, Via Superfície,
- *   Zona T2" (o valor mais alto dos dois escalões T1/T2, para não subcotar
- *   o envio). A Zona real (T1 ou T2) depende do código postal de origem E
- *   destino — ver tabela de zonas do tarifário se quiseres afinar isto.
- * - Açores/Madeira usam "Encomenda Postal Nacional, Via Aérea"
- *   (Continente→Açores = C/A/C, Continente→Madeira = C/M/C).
- * - União Europeia é uma aproximação usando "Correio Normal Internacional,
- *   Pacote Postal, Zona Europa" (serviço mais leve, sem seguro/tracking
- *   dedicado) — para encomendas seguradas/rastreadas o preço real é mais
- *   alto. Ajustar quando confirmares o serviço que vais usar.
+ * Serviço usado (o mais económico com rastreio, "Pacote Postal — bens e
+ * documentos", preços com IVA):
+ * - Portugal Continental / Açores / Madeira: "Correio Registado" nacional.
+ *   Este serviço tem preço ÚNICO em todo o território nacional — não há
+ *   diferença entre Continente e Ilhas (ao contrário da "Encomenda Postal
+ *   Nacional", que tem zonas separadas mas é um serviço bem mais caro).
+ *   Escalões "Pacote Postal (bens e documentos)": até 500g = 4,60€;
+ *   501g–2000g = 5,40€. Sem escalão acima de 2kg neste serviço.
+ * - União Europeia: "Correio Azul Internacional", zona Europa, "Pacote
+ *   Postal (bens e documentos)". IMPORTANTE: desde 2026 o "Correio
+ *   Registado Internacional" deixou de aceitar mercadorias (só
+ *   documentos), por nova regra da União Postal Universal — por isso não
+ *   pode ser usado para as peças. O Correio Azul Internacional é a
+ *   alternativa mais barata que ainda aceita bens.
+ *   Escalões "Pacote Postal (bens e documentos)", zona Europa: até 1000g
+ *   = 5,18€; 1001g–2000g = 6,53€; 2001g–5000g = 8,70€ (valor aproximado
+ *   para o escalão seguinte, a confirmar para encomendas muito pesadas).
  *
  * Todos os valores em euros. Edita livremente — os escalões usam o peso
  * total do carrinho em gramas.
@@ -28,40 +35,20 @@ export const FREE_SHIPPING_THRESHOLD = 49;
 /** Peso assumido (gramas) quando um produto não tem peso definido. */
 export const DEFAULT_ITEM_WEIGHT_GRAMS = 50;
 
+// Correio Registado nacional — preço único, igual para Continente e Ilhas.
+const CORREIO_REGISTADO_NACIONAL: WeightBracket[] = [
+  { maxGrams: 500, price: 4.6 },
+  { maxGrams: 2000, price: 5.4 },
+];
+
 const RATES: Record<ShippingRegion, WeightBracket[]> = {
-  continental: [
-    { maxGrams: 2000, price: 9.6 },
-    { maxGrams: 5000, price: 12.1 },
-    { maxGrams: 10000, price: 17.6 },
-  ],
-  acores: [
-    { maxGrams: 2000, price: 12.85 },
-    { maxGrams: 3000, price: 16.7 },
-    { maxGrams: 4000, price: 16.9 },
-    { maxGrams: 5000, price: 18.0 },
-    { maxGrams: 6000, price: 23.7 },
-    { maxGrams: 7000, price: 27.0 },
-    { maxGrams: 8000, price: 29.1 },
-    { maxGrams: 9000, price: 29.95 },
-    { maxGrams: 10000, price: 30.35 },
-  ],
-  madeira: [
-    { maxGrams: 2000, price: 11.8 },
-    { maxGrams: 3000, price: 16.15 },
-    { maxGrams: 4000, price: 17.15 },
-    { maxGrams: 5000, price: 17.85 },
-    { maxGrams: 6000, price: 23.5 },
-    { maxGrams: 7000, price: 26.4 },
-    { maxGrams: 8000, price: 28.4 },
-    { maxGrams: 9000, price: 29.25 },
-    { maxGrams: 10000, price: 29.9 },
-  ],
+  continental: CORREIO_REGISTADO_NACIONAL,
+  acores: CORREIO_REGISTADO_NACIONAL,
+  madeira: CORREIO_REGISTADO_NACIONAL,
   ue: [
-    { maxGrams: 100, price: 2.65 },
-    { maxGrams: 250, price: 4.25 },
-    { maxGrams: 500, price: 7.05 },
-    { maxGrams: 1000, price: 10.85 },
-    { maxGrams: 2000, price: 18.47 },
+    { maxGrams: 1000, price: 5.18 },
+    { maxGrams: 2000, price: 6.53 },
+    { maxGrams: 5000, price: 8.7 },
   ],
 };
 

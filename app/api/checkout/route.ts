@@ -136,22 +136,18 @@ export async function POST(request: Request) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  // É obrigatório ter sessão iniciada para finalizar a compra — garante que
-  // cada encomenda fica associada a uma conta (com email/histórico).
+  // Utilizador autenticado (opcional) — se existir, a encomenda fica
+  // associada à conta; caso contrário segue como checkout de convidado.
   const supabaseAuth = createServerSupabaseClient();
   const {
     data: { user },
   } = await supabaseAuth.auth.getUser();
 
-  if (!user) {
-    return NextResponse.json({ error: "LOGIN_REQUIRED" }, { status: 401 });
-  }
-
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     line_items,
-    client_reference_id: user.id,
-    customer_email: user.email,
+    client_reference_id: user?.id,
+    customer_email: user?.email,
     shipping_address_collection: {
       allowed_countries: SHIPPING_COUNTRIES[
         shippingRegion

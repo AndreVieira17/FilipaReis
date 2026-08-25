@@ -62,8 +62,7 @@
     "errorEmptyCart": "Empty cart.",
     "errorProductUnavailable": "One of the products in your cart is no longer available.",
     "errorVariantUnavailable": "One of the selected options is no longer available.",
-    "errorShippingUnavailable": "No shipping available for this order's weight. Please contact us.",
-    "errorLoginRequired": "You need to log in to complete your purchase."
+    "errorShippingUnavailable": "No shipping available for this order's weight. Please contact us."
   },
   "wishlist": {
     "title": "Wishlist",
@@ -176,7 +175,7 @@
   },
   "checkout": {
     "accountOption": "Log in or create account",
-    "accountOptionNote": "You need to log in or create an account to complete your purchase.",
+    "accountOptionNote": "Already have an account? Log in to save your details for next time.",
     "loggedInAs": "Checking out as {email}",
     "securePayment": "Secure payment processed by Stripe",
     "successTitle": "Thank you for your order!",

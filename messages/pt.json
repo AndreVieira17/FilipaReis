@@ -62,8 +62,7 @@
     "errorEmptyCart": "Carrinho vazio.",
     "errorProductUnavailable": "Um dos produtos no carrinho já não está disponível.",
     "errorVariantUnavailable": "Uma das opções escolhidas já não está disponível.",
-    "errorShippingUnavailable": "Não há envio disponível para o peso desta encomenda. Contacta-nos.",
-    "errorLoginRequired": "Precisas de iniciar sessão para finalizar a compra."
+    "errorShippingUnavailable": "Não há envio disponível para o peso desta encomenda. Contacta-nos."
   },
   "wishlist": {
     "title": "Favoritos",
@@ -176,7 +175,7 @@
   },
   "checkout": {
     "accountOption": "Iniciar sessão ou criar conta",
-    "accountOptionNote": "Precisas de iniciar sessão ou criar conta para finalizar a compra.",
+    "accountOptionNote": "Já tens conta? Inicia sessão para guardares os teus dados para a próxima vez.",
     "loggedInAs": "A finalizar compra como {email}",
     "securePayment": "Pagamento seguro processado pela Stripe",
     "successTitle": "Obrigada pela tua compra!",
