@@ -13,7 +13,8 @@
     "closeMenu": "Fermer le menu",
     "wishlistAria": "Voir les favoris",
     "cartAria": "Ouvrir le panier",
-    "languageAria": "Choisir la langue"
+    "languageAria": "Choisir la langue",
+    "homeAria": "Aller à l'accueil"
   },
   "common": {
     "addToCart": "Ajouter au panier",
@@ -25,7 +26,8 @@
   },
   "breadcrumbs": {
     "home": "Accueil",
-    "navAria": "Fil d'Ariane"
+    "navAria": "Fil d'Ariane",
+    "backAria": "Retour"
   },
   "shippingBanner": {
     "freeAbove": "Livraison gratuite dès {threshold} d'achat",
@@ -97,7 +99,9 @@
     "shippingLink": "Voir délais et frais",
     "returnsNote": "Retours faciles.",
     "returnsLink": "Voir la politique",
-    "photoAria": "Voir la photo {n}"
+    "photoAria": "Voir la photo {n}",
+    "prevPhotoAria": "Photo précédente",
+    "nextPhotoAria": "Photo suivante"
   },
   "footer": {
     "tagline": "Pièces artisanales, fabriquées une à une avec des matériaux naturels.",

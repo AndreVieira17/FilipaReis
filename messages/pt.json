@@ -13,7 +13,8 @@
     "closeMenu": "Fechar menu",
     "wishlistAria": "Ver favoritos",
     "cartAria": "Abrir carrinho",
-    "languageAria": "Escolher idioma"
+    "languageAria": "Escolher idioma",
+    "homeAria": "Ir para o início"
   },
   "common": {
     "addToCart": "Adicionar ao carrinho",
@@ -25,7 +26,8 @@
   },
   "breadcrumbs": {
     "home": "Início",
-    "navAria": "Trilho de navegação"
+    "navAria": "Trilho de navegação",
+    "backAria": "Voltar atrás"
   },
   "shippingBanner": {
     "freeAbove": "Portes grátis em compras acima de {threshold}",
@@ -97,7 +99,9 @@
     "shippingLink": "Ver prazos e custos",
     "returnsNote": "Devoluções fáceis.",
     "returnsLink": "Ver política",
-    "photoAria": "Ver fotografia {n}"
+    "photoAria": "Ver fotografia {n}",
+    "prevPhotoAria": "Fotografia anterior",
+    "nextPhotoAria": "Fotografia seguinte"
   },
   "footer": {
     "tagline": "Peças de artesanato feitas à mão, uma a uma, com materiais naturais.",

@@ -43,9 +43,6 @@ export default async function ProductPage({
       <Breadcrumbs
         items={[
           { label: t("title"), href: "/loja" },
-          ...(product.category
-            ? [{ label: product.category.name_pt, href: `/loja?categoria=${product.category.slug}` }]
-            : []),
           { label: product.name_pt },
         ]}
       />

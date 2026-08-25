@@ -13,7 +13,8 @@
     "closeMenu": "Close menu",
     "wishlistAria": "View wishlist",
     "cartAria": "Open cart",
-    "languageAria": "Choose language"
+    "languageAria": "Choose language",
+    "homeAria": "Go to homepage"
   },
   "common": {
     "addToCart": "Add to cart",
@@ -25,7 +26,8 @@
   },
   "breadcrumbs": {
     "home": "Home",
-    "navAria": "Breadcrumb"
+    "navAria": "Breadcrumb",
+    "backAria": "Go back"
   },
   "shippingBanner": {
     "freeAbove": "Free shipping on orders above {threshold}",
@@ -97,7 +99,9 @@
     "shippingLink": "See delivery times & costs",
     "returnsNote": "Easy returns.",
     "returnsLink": "See policy",
-    "photoAria": "View photo {n}"
+    "photoAria": "View photo {n}",
+    "prevPhotoAria": "Previous photo",
+    "nextPhotoAria": "Next photo"
   },
   "footer": {
     "tagline": "Handmade pieces, crafted one at a time with natural materials.",

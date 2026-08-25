@@ -31,14 +31,9 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
         />
       </div>
       <div className="mt-3 flex items-start justify-between gap-2">
-        <div>
-          <h3 className="text-sm text-charcoal transition-colors group-hover:text-clay-dark">
-            {product.name_pt}
-          </h3>
-          {product.category && (
-            <p className="mt-0.5 text-xs text-stone">{product.category.name_pt}</p>
-          )}
-        </div>
+        <h3 className="text-sm text-charcoal transition-colors group-hover:text-clay-dark">
+          {product.name_pt}
+        </h3>
         <Price price={product.price} className="whitespace-nowrap text-sm text-charcoal" />
       </div>
     </Link>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Home, Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { CartButton } from "./CartButton";
@@ -43,6 +43,13 @@ export function Header() {
         </nav>
 
         <div className="relative flex items-center gap-1">
+          <Link
+            href="/"
+            aria-label={tHeader("homeAria")}
+            className="rounded-full p-2 text-charcoal transition-colors hover:bg-sand"
+          >
+            <Home className="h-5 w-5" strokeWidth={1.5} />
+          </Link>
           <HeaderSearch />
           <LanguageSwitcher />
           <AccountIcon />
