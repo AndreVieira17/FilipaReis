@@ -62,7 +62,8 @@
     "errorEmptyCart": "Carrinho vazio.",
     "errorProductUnavailable": "Um dos produtos no carrinho já não está disponível.",
     "errorVariantUnavailable": "Uma das opções escolhidas já não está disponível.",
-    "errorShippingUnavailable": "Não há envio disponível para o peso desta encomenda. Contacta-nos."
+    "errorShippingUnavailable": "Não há envio disponível para o peso desta encomenda. Contacta-nos.",
+    "errorPriceChanged": "O preço mudou entretanto. Atualiza a página e tenta novamente."
   },
   "wishlist": {
     "title": "Favoritos",
@@ -101,7 +102,8 @@
     "returnsLink": "Ver política",
     "photoAria": "Ver fotografia {n}",
     "prevPhotoAria": "Fotografia anterior",
-    "nextPhotoAria": "Fotografia seguinte"
+    "nextPhotoAria": "Fotografia seguinte",
+    "weightLabel": "Peso: {weight}g"
   },
   "footer": {
     "tagline": "Peças de artesanato feitas à mão, uma a uma, com materiais naturais.",

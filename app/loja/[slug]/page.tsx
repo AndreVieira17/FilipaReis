@@ -74,6 +74,11 @@ export default async function ProductPage({
           {product.description_pt && (
             <p className="mt-4 whitespace-pre-line text-stone">{product.description_pt}</p>
           )}
+          {product.weight_grams != null && (
+            <p className="mt-3 text-xs text-stone">
+              {tProduct("weightLabel", { weight: product.weight_grams })}
+            </p>
+          )}
 
           <AddToCartForm product={product} />
           <ShippingInfo />

@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { stripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient as createServerSupabaseClient } from "@/lib/supabase/server";
+import { centimosParaEuro, euroParaCentimos } from "@/lib/pricing";
 import {
   totalWeightGrams,
   resolveShippingCost,
@@ -44,7 +45,10 @@ export async function POST(request: Request) {
     };
   }> = [];
 
-  let subtotal = 0;
+  // Tudo calculado em cêntimos (não em euros com vírgula flutuante) — o
+  // mesmo critério usado no carrinho do site, para garantir que o total
+  // devolvido aqui é sempre exatamente igual ao que a Stripe vai cobrar.
+  let subtotalCents = 0;
   const weightItems: { weightGrams: number | null; quantity: number }[] = [];
 
   for (const item of items) {
@@ -83,7 +87,8 @@ export async function POST(request: Request) {
       label = [variant.size, variant.color, variant.material].filter(Boolean).join(" / ");
     }
 
-    subtotal += unitPrice * quantity;
+    const unitAmountCents = euroParaCentimos(unitPrice);
+    subtotalCents += unitAmountCents * quantity;
     weightItems.push({ weightGrams: product.weight_grams, quantity });
 
     const images = (product.images ?? []) as Array<{
@@ -97,7 +102,7 @@ export async function POST(request: Request) {
       quantity,
       price_data: {
         currency: "eur",
-        unit_amount: Math.round(unitPrice * 100),
+        unit_amount: unitAmountCents,
         product_data: {
           name: label ? `${product.name_pt} (${label})` : product.name_pt,
           images: primaryImage ? [primaryImage.url] : undefined,
@@ -110,6 +115,7 @@ export async function POST(request: Request) {
     });
   }
 
+  const subtotal = centimosParaEuro(subtotalCents);
   const weightGrams = totalWeightGrams(weightItems);
   const shippingCost = resolveShippingCost(shippingRegion, weightGrams, subtotal);
 
@@ -120,13 +126,16 @@ export async function POST(request: Request) {
     );
   }
 
+  const shippingCents = euroParaCentimos(shippingCost);
+  const totalCents = subtotalCents + shippingCents;
+
   const tShipping = await getTranslations("shipping");
 
   line_items.push({
     quantity: 1,
     price_data: {
       currency: "eur",
-      unit_amount: Math.round(shippingCost * 100),
+      unit_amount: shippingCents,
       product_data: {
         name: tShipping("lineItemLabel", { region: tShipping(shippingRegion) }),
         metadata: { is_shipping: "true" },
@@ -158,5 +167,5 @@ export async function POST(request: Request) {
     cancel_url: `${siteUrl}/checkout/cancelado`,
   });
 
-  return NextResponse.json({ url: session.url });
+  return NextResponse.json({ url: session.url, totalCents });
 }

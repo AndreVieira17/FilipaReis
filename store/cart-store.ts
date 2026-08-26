@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartItem } from "@/lib/types";
+import { centimosParaEuro, euroParaCentimos } from "@/lib/pricing";
 
 type CartState = {
   items: CartItem[];
@@ -73,6 +74,8 @@ export function useCartCount() {
 
 export function useCartSubtotal() {
   return useCartStore((s) =>
-    s.items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0)
+    centimosParaEuro(
+      s.items.reduce((somaCentimos, i) => somaCentimos + euroParaCentimos(i.unitPrice) * i.quantity, 0)
+    )
   );
 }

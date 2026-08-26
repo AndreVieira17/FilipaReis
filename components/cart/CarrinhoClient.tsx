@@ -10,6 +10,7 @@ import {
   useCartHasHydrated,
 } from "@/store/cart-store";
 import { formatPrice } from "@/lib/utils";
+import { centimosParaEuro, euroParaCentimos } from "@/lib/pricing";
 import {
   totalWeightGrams,
   resolveShippingCost,
@@ -54,7 +55,11 @@ export function CarrinhoClient() {
     [items]
   );
   const shippingCost = resolveShippingCost(region, weightGrams, subtotal);
-  const total = subtotal + (shippingCost ?? 0);
+  // Total calculado em cêntimos (nunca em euros com vírgula flutuante) —
+  // exatamente o mesmo critério usado na rota de checkout, para que o
+  // valor mostrado aqui nunca possa divergir do valor cobrado na Stripe.
+  const totalCents = euroParaCentimos(subtotal) + euroParaCentimos(shippingCost ?? 0);
+  const total = centimosParaEuro(totalCents);
 
   async function handleCheckout() {
     setLoading(true);
@@ -76,6 +81,15 @@ export function CarrinhoClient() {
       if (!res.ok || !data.url) {
         const key = CHECKOUT_ERROR_KEYS[data.error as string];
         throw new Error(key ? t(key) : t("checkoutError"));
+      }
+      // Última verificação de segurança: o total que a Stripe vai realmente
+      // cobrar (calculado no servidor, a partir dos preços na base de
+      // dados) tem de ser exatamente igual ao total mostrado aqui. Se não
+      // for — por exemplo, um preço mudou entre adicionares ao carrinho e
+      // agora — recusamos avançar em vez de deixar pagar um valor diferente
+      // do que foi mostrado.
+      if (typeof data.totalCents === "number" && data.totalCents !== totalCents) {
+        throw new Error(t("errorPriceChanged"));
       }
       window.location.href = data.url;
     } catch (err) {

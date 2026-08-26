@@ -62,7 +62,8 @@
     "errorEmptyCart": "Empty cart.",
     "errorProductUnavailable": "One of the products in your cart is no longer available.",
     "errorVariantUnavailable": "One of the selected options is no longer available.",
-    "errorShippingUnavailable": "No shipping available for this order's weight. Please contact us."
+    "errorShippingUnavailable": "No shipping available for this order's weight. Please contact us.",
+    "errorPriceChanged": "The price changed in the meantime. Refresh the page and try again."
   },
   "wishlist": {
     "title": "Wishlist",
@@ -101,7 +102,8 @@
     "returnsLink": "See policy",
     "photoAria": "View photo {n}",
     "prevPhotoAria": "Previous photo",
-    "nextPhotoAria": "Next photo"
+    "nextPhotoAria": "Next photo",
+    "weightLabel": "Weight: {weight}g"
   },
   "footer": {
     "tagline": "Handmade pieces, crafted one at a time with natural materials.",

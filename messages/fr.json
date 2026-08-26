@@ -62,7 +62,8 @@
     "errorEmptyCart": "Panier vide.",
     "errorProductUnavailable": "Un des produits du panier n'est plus disponible.",
     "errorVariantUnavailable": "Une des options choisies n'est plus disponible.",
-    "errorShippingUnavailable": "Aucune livraison disponible pour le poids de cette commande. Contacte-nous."
+    "errorShippingUnavailable": "Aucune livraison disponible pour le poids de cette commande. Contacte-nous.",
+    "errorPriceChanged": "Le prix a changé entre-temps. Actualise la page et réessaie."
   },
   "wishlist": {
     "title": "Favoris",
@@ -101,7 +102,8 @@
     "returnsLink": "Voir la politique",
     "photoAria": "Voir la photo {n}",
     "prevPhotoAria": "Photo précédente",
-    "nextPhotoAria": "Photo suivante"
+    "nextPhotoAria": "Photo suivante",
+    "weightLabel": "Poids : {weight}g"
   },
   "footer": {
     "tagline": "Pièces artisanales, fabriquées une à une avec des matériaux naturels.",
