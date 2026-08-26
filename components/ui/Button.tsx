@@ -27,15 +27,17 @@ export function LinkButton({
   href,
   variant = "primary",
   className,
+  onClick,
   children,
 }: {
   href: string;
   variant?: Variant;
   className?: string;
+  onClick?: () => void;
   children: React.ReactNode;
 }) {
   return (
-    <Link href={href} className={cn(base, variantClasses[variant], className)}>
+    <Link href={href} className={cn(base, variantClasses[variant], className)} onClick={onClick}>
       {children}
     </Link>
   );

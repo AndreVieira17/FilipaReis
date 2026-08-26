@@ -248,10 +248,13 @@ export function CarrinhoClient() {
           )}
 
           {error && <p className="mt-3 text-xs text-clay-dark">{error}</p>}
+          <LinkButton href="/loja" variant="secondary" className="mt-6 w-full">
+            {t("continueShopping")}
+          </LinkButton>
           <Button
             type="button"
             variant="primary"
-            className="mt-6 w-full"
+            className="mt-3 w-full"
             onClick={handleCheckout}
             disabled={loading || shippingCost === null}
           >

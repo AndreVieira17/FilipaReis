@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { FreeShippingBanner } from "@/components/layout/FreeShippingBanner";
+import { AddToCartModal } from "@/components/cart/AddToCartModal";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -59,6 +60,7 @@ export default async function RootLayout({
           <main className="min-h-[60vh]">{children}</main>
           <Footer />
           <CartDrawer />
+          <AddToCartModal />
         </NextIntlClientProvider>
       </body>
     </html>
