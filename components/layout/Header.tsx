@@ -19,15 +19,34 @@ export function Header() {
   const NAV_LINKS = [
     { href: "/", label: t("home") },
     { href: "/loja", label: t("shop") },
+    { href: "/loja?categoria=acessorios", label: t("accessories") },
     { href: "/sobre", label: t("about") },
     { href: "/contacto", label: t("contact") },
   ];
 
   return (
     <header className="border-b border-line bg-cream/90 backdrop-blur">
-      <div className="container-app flex h-16 items-center justify-between">
-        <Link href="/" className="font-display text-lg tracking-wide text-charcoal">
-          Filipa Reis
+      <div className="container-app flex min-h-16 flex-wrap items-center justify-between gap-x-3 gap-y-2 py-2">
+        <Link href="/" className="flex min-w-0 items-center gap-3">
+          <img
+            src="/logo-placeholder.svg"
+            alt={tHeader("logoAria")}
+            className="h-10 w-10 shrink-0"
+          />
+          <span className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span
+              className="font-brand text-lg tracking-wide"
+              style={{ color: "#484444" }}
+            >
+              Filipa Reis
+            </span>
+            <span
+              className="font-brand-tagline text-sm sm:text-base"
+              style={{ color: "#F1B032" }}
+            >
+              {tHeader("tagline")}
+            </span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

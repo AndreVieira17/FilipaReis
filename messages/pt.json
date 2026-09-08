@@ -2,6 +2,7 @@
   "nav": {
     "home": "Início",
     "shop": "Loja",
+    "accessories": "Acessórios",
     "about": "Sobre",
     "contact": "Contacto"
   },
@@ -14,7 +15,9 @@
     "wishlistAria": "Ver favoritos",
     "cartAria": "Abrir carrinho",
     "languageAria": "Escolher idioma",
-    "homeAria": "Ir para o início"
+    "homeAria": "Ir para o início",
+    "tagline": "Acessórios de moda",
+    "logoAria": "Espaço reservado para o logótipo"
   },
   "common": {
     "addToCart": "Adicionar ao carrinho",

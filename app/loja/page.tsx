@@ -18,16 +18,17 @@ const VALID_SORTS: SortOption[] = ["newest", "price_asc", "price_desc"];
 export default async function LojaPage({
   searchParams,
 }: {
-  searchParams: { q?: string; sort?: string; page?: string };
+  searchParams: { q?: string; sort?: string; page?: string; categoria?: string };
 }) {
   const query = searchParams.q;
+  const categorySlug = searchParams.categoria;
   const sort: SortOption = VALID_SORTS.includes(searchParams.sort as SortOption)
     ? (searchParams.sort as SortOption)
     : "newest";
   const page = Math.max(1, Number(searchParams.page) || 1);
 
   const [{ products, total }, t] = await Promise.all([
-    getProducts({ query, sort, page }),
+    getProducts({ query, sort, page, categorySlug }),
     getTranslations("shop"),
   ]);
 
@@ -35,7 +36,7 @@ export default async function LojaPage({
 
   function buildHref(overrides: Record<string, string | undefined>) {
     const params = new URLSearchParams();
-    const merged = { q: query, sort: searchParams.sort, ...overrides };
+    const merged = { q: query, sort: searchParams.sort, categoria: categorySlug, ...overrides };
     Object.entries(merged).forEach(([key, value]) => {
       if (value) params.set(key, value);
     });

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Fraunces, Inter, Bricolage_Grotesque, Pacifico } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
@@ -20,18 +20,32 @@ const inter = Inter({
   variable: "--font-body",
 });
 
+// Alternativas do Google Fonts para "Loubag" e "peciva" (nenhuma das duas
+// existe no Google Fonts) — ver components/layout/Header.tsx.
+const bricolageGrotesque = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-brand",
+  weight: ["600"],
+});
+
+const pacifico = Pacifico({
+  subsets: ["latin"],
+  variable: "--font-brand-tagline",
+  weight: ["400"],
+});
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://filipareis.pt";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Filipa Reis | Artesanato Feito à Mão",
+    default: "Filipa Reis",
     template: "%s | Filipa Reis",
   },
   description:
     "Peças de artesanato feitas à mão por Filipa Reis: colares, pulseiras, brincos e cerâmica com materiais naturais.",
   openGraph: {
-    title: "Filipa Reis | Artesanato Feito à Mão",
+    title: "Filipa Reis",
     description:
       "Peças de artesanato feitas à mão por Filipa Reis: colares, pulseiras, brincos e cerâmica com materiais naturais.",
     url: siteUrl,
@@ -51,7 +65,9 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${fraunces.variable} ${inter.variable} font-sans antialiased`}>
+      <body
+        className={`${fraunces.variable} ${inter.variable} ${bricolageGrotesque.variable} ${pacifico.variable} font-sans antialiased`}
+      >
         <NextIntlClientProvider messages={messages}>
           <div className="sticky top-0 z-40">
             <FreeShippingBanner />

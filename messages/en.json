@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "shop": "Shop",
+    "accessories": "Accessories",
     "about": "About",
     "contact": "Contact"
   },
@@ -14,7 +15,9 @@
     "wishlistAria": "View wishlist",
     "cartAria": "Open cart",
     "languageAria": "Choose language",
-    "homeAria": "Go to homepage"
+    "homeAria": "Go to homepage",
+    "tagline": "Fashion accessories",
+    "logoAria": "Placeholder for the logo"
   },
   "common": {
     "addToCart": "Add to cart",

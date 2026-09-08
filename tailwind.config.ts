@@ -20,6 +20,8 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-display)", "serif"],
         sans: ["var(--font-body)", "sans-serif"],
+        brand: ["var(--font-brand)", "sans-serif"],
+        "brand-tagline": ["var(--font-brand-tagline)", "cursive"],
       },
       maxWidth: {
         container: "1200px",
